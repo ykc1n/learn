@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to Network Concepts</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+</head>
+<body>
+<div style="text-align:center"><span><a href="project-validating-a-tcp-packet.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="ip-routing.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="17" id="ip-subnets-and-subnet-masks"><span class="header-section-number">17</span> IP Subnets and Subnet Masks</h1>
+<p>[<em>Everything in this chapter will use IPv4, not IPv6. The concepts are basically the same; it’s just easier to learn with IPv4.</em>]</p>
+<p><strong>If you’re needing to review your Bitwise Operations, please see the <a href="appendix-bitwise.html#appendix-bitwise">Appendix: Bitwise Operations</a>.</strong></p>
+<p>In this chapter:</p>
+<ul>
+<li>Address representation</li>
+<li>Converting from dots-and-numbers to a value</li>
+<li>Converting from a value to dots-and-numbers</li>
+<li>Subnet and host refresher</li>
+<li>Subnet Mask refresher</li>
+<li>Finding the subnet mask from slash notation</li>
+<li>Finding the subnet for an IP address, given that address and a subnet mask</li>
+</ul>
+<h2 data-number="17.1" id="address-representation"><span class="header-section-number">17.1</span> Address Representation</h2>
+<p>Remember that IPv4 addresses are commonly shown in dots-and-numbers notation, e.g. <code>198.51.100.10</code>.</p>
+<p>And recall that each of those numbers is a byte, which can have values 0-255, decimal (which is the same as 00-FF hexadecimal, and 00000000-11111111 binary).</p>
+<p>So really, the dots-and-numbers is just there for our human convenience.</p>
+<blockquote>
+<p>Protip: remember that different number bases like hex, binary, and decimal are just different ways of writing a value down. Kind of like different languages for representing the same numeric value.</p>
+<p>When a value is stored in a variable, it’s best to think of it as existing in a pure numeric sense–no base at all. It’s only when you write it down (in code or print it out) that the base matters.</p>
+<p>For instance, Python prints everything in decimal (base 10) by default. It has various methods to override that and output in another base.</p>
+</blockquote>
+<p>Let’s look at that address <code>198.51.100.10</code> in hex: <code>c6.33.64.0a</code>.</p>
+<p>Now let’s cram those bytes together into a single hex number: <code>c633640a</code>.</p>
+<p>Converting <code>c633640a</code> into decimal, we get: <code>3325256714</code>.</p>
+<p>So in a way, these all represent the same IP address:</p>
+<div class="sourceCode" id="cb154"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb154-1"><a href="ip-subnets-and-subnet-masks.html#cb154-1" aria-hidden="true" tabindex="-1"></a>198.51.100.10</span>
+<span id="cb154-2"><a href="ip-subnets-and-subnet-masks.html#cb154-2" aria-hidden="true" tabindex="-1"></a>c6.33.64.0a</span>
+<span id="cb154-3"><a href="ip-subnets-and-subnet-masks.html#cb154-3" aria-hidden="true" tabindex="-1"></a>c633640a</span>
+<span id="cb154-4"><a href="ip-subnets-and-subnet-masks.html#cb154-4" aria-hidden="true" tabindex="-1"></a>3325256714</span></code></pre></div>
+<p>Fair enough?</p>
+<p>But why?</p>
+<p>Well, we’re about to do some math on IP addresses. Now, we <em>could</em> do that math one byte at a time and it would work just fine.</p>
+<p>But it turns out that if we pack all those bytes into a single number, we can do the math on all the bytes at once, and it becomes easier. Stay tuned!</p>
+<h2 data-number="17.2" id="converting-from-dots-and-numbers"><span class="header-section-number">17.2</span> Converting from Dots-and-Numbers</h2>
+<p>Our goal in this section is to take a dots-and-numbers string like <code>198.51.100.10</code> and convert it into the corresponding value, like <code>3325256714</code> (decimal).</p>
+<p>We could do it with string manipulation like in the previous section, but let’s do it in a more <em>bitwise</em> sense.</p>
+<p>Let’s extract the individual numbers from an IP address (Python can do this with <code>.split()</code>.)</p>
+<p>The string:</p>
+<div class="sourceCode" id="cb155"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb155-1"><a href="ip-subnets-and-subnet-masks.html#cb155-1" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;198.51.100.10&quot;</span></span></code></pre></div>
+<p>becomes the list of strings:</p>
+<div class="sourceCode" id="cb156"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb156-1"><a href="ip-subnets-and-subnet-masks.html#cb156-1" aria-hidden="true" tabindex="-1"></a>[<span class="st">&quot;198&quot;</span>, <span class="st">&quot;51&quot;</span>, <span class="st">&quot;100&quot;</span>, <span class="st">&quot;10&quot;</span>]</span></code></pre></div>
+<p>Now let’s convert each of those to integers. (Python could do this with a loop and the <code>int()</code> function, or <code>map()</code>, or a list comprehension.)</p>
+<div class="sourceCode" id="cb157"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb157-1"><a href="ip-subnets-and-subnet-masks.html#cb157-1" aria-hidden="true" tabindex="-1"></a>[<span class="dv">198</span>, <span class="dv">51</span>, <span class="dv">100</span>, <span class="dv">10</span>]</span></code></pre></div>
+<p>Now I’m going to write these numbers in hex because it makes the future steps more clear. But remember that they’re just stored as numeric values, so Python won’t print them as hex unless you ask it to.</p>
+<div class="sourceCode" id="cb158"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb158-1"><a href="ip-subnets-and-subnet-masks.html#cb158-1" aria-hidden="true" tabindex="-1"></a>[<span class="bn">0xc6</span>, <span class="bn">0x33</span>, <span class="bn">0x64</span>, <span class="bn">0x0a</span>]</span></code></pre></div>
+<p>To build our number, we’re going to rely on a couple bitwise operations: bitwise-OR and bitwise-shift.</p>
+<p>For the sake of example, let’s hardcode the math:</p>
+<div class="sourceCode" id="cb159"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb159-1"><a href="ip-subnets-and-subnet-masks.html#cb159-1" aria-hidden="true" tabindex="-1"></a>(<span class="bn">0xc6</span> <span class="op">&lt;&lt;</span> <span class="dv">24</span>) <span class="op">|</span> (<span class="bn">0x33</span> <span class="op">&lt;&lt;</span> <span class="dv">16</span>) <span class="op">|</span> (<span class="bn">0x64</span> <span class="op">&lt;&lt;</span> <span class="dv">8</span>) <span class="op">|</span> <span class="bn">0x0a</span></span></code></pre></div>
+<p>Running that in Python gives the decimal number <code>3325256714</code>. Converted to hex, we’re back to <code>0xc633640a</code>.</p>
+<p>You can use the above formula to convert any set of 4 bytes to a packed number.</p>
+<blockquote>
+<p>There’s also a clever loop you can run to do it one byte at a time. See if you can figure that out as an added challenge! DM the instructor to see how clever you were.</p>
+</blockquote>
+<h2 data-number="17.3" id="converting-to-dots-and-numbers"><span class="header-section-number">17.3</span> Converting to Dots-and-Numbers</h2>
+<p>What if you have that value from the previous section, <code>3325256714</code>, and you want to get it back as an IP address?</p>
+<p>We can use some shifting to make that happen, too! But we have to do some AND masking to get just the parts of the number we want.</p>
+<p>Let’s convert to hex because each byte is exactly 2 hex digits and it’s a little easier to see them: <code>0xc633640a</code>.</p>
+<p>Now let’s look at that number shifted by 0 bits, 8 bits, 16 bits, and 24 bits:</p>
+<div class="sourceCode" id="cb160"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb160-1"><a href="ip-subnets-and-subnet-masks.html#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">24</span> <span class="op">==</span> <span class="bn">0x000000c6</span></span>
+<span id="cb160-2"><a href="ip-subnets-and-subnet-masks.html#cb160-2" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">16</span> <span class="op">==</span> <span class="bn">0x0000c633</span></span>
+<span id="cb160-3"><a href="ip-subnets-and-subnet-masks.html#cb160-3" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">8</span>  <span class="op">==</span> <span class="bn">0x00c63364</span></span>
+<span id="cb160-4"><a href="ip-subnets-and-subnet-masks.html#cb160-4" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">0</span>  <span class="op">==</span> <span class="bn">0xc633640a</span></span></code></pre></div>
+<p>If you look at just the two digits on the right, you’ll see they’re the bytes of the original number:</p>
+<div class="sourceCode" id="cb161"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb161-1"><a href="ip-subnets-and-subnet-masks.html#cb161-1" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">24</span> <span class="op">==</span> <span class="bn">0x000000</span> c6</span>
+<span id="cb161-2"><a href="ip-subnets-and-subnet-masks.html#cb161-2" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">16</span> <span class="op">==</span> <span class="bn">0x0000c6</span> <span class="dv">33</span></span>
+<span id="cb161-3"><a href="ip-subnets-and-subnet-masks.html#cb161-3" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">8</span>  <span class="op">==</span> <span class="bn">0x00c633</span> <span class="dv">64</span></span>
+<span id="cb161-4"><a href="ip-subnets-and-subnet-masks.html#cb161-4" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">0</span>  <span class="op">==</span> <span class="bn">0xc63364</span> <span class="dv">0</span><span class="er">a</span></span></code></pre></div>
+<p>So we’re onto something, except looking at the right shift 8, for example, we get this:</p>
+<div class="sourceCode" id="cb162"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb162-1"><a href="ip-subnets-and-subnet-masks.html#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">8</span>  <span class="op">==</span> <span class="bn">0x00c63364</span></span></code></pre></div>
+<p>So yes, I’m interested in the byte <code>0x64</code> like we see on the right, but not the <code>0xc633</code> part of it. How can I zero that higher part out, leaving just the <code>0x64</code>?</p>
+<p>We can use an <em>AND mask</em>! The bitwise-AND operator can work like a stencil letting some of the number through and zeroing other parts of it. Let’s do a bitwise-AND on that number with the byte <code>0xff</code>, which is all 8 bits set to <code>1</code> and all bits over the first 8 have implied value <code>0</code>.</p>
+<div class="sourceCode" id="cb163"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb163-1"><a href="ip-subnets-and-subnet-masks.html#cb163-1" aria-hidden="true" tabindex="-1"></a>  0x00c63364</span>
+<span id="cb163-2"><a href="ip-subnets-and-subnet-masks.html#cb163-2" aria-hidden="true" tabindex="-1"></a>&amp; 0x000000ff</span>
+<span id="cb163-3"><a href="ip-subnets-and-subnet-masks.html#cb163-3" aria-hidden="true" tabindex="-1"></a>------------</span>
+<span id="cb163-4"><a href="ip-subnets-and-subnet-masks.html#cb163-4" aria-hidden="true" tabindex="-1"></a>  0x00000064</span></code></pre></div>
+<p>Hey! <code>0x64</code> is the byte from the IP address we wanted! See how where there were binary <code>1</code>s in the mask (except here represented in hex) it let the value “show through”, while everywhere that had a zero it was masked out?</p>
+<p>Now we can extract our digits:</p>
+<div class="sourceCode" id="cb164"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb164-1"><a href="ip-subnets-and-subnet-masks.html#cb164-1" aria-hidden="true" tabindex="-1"></a>(<span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">24</span>) <span class="op">&amp;</span> <span class="bn">0xff</span> <span class="op">==</span> <span class="bn">0x000000c6</span> <span class="op">==</span> <span class="bn">0xc6</span></span>
+<span id="cb164-2"><a href="ip-subnets-and-subnet-masks.html#cb164-2" aria-hidden="true" tabindex="-1"></a>(<span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">16</span>) <span class="op">&amp;</span> <span class="bn">0xff</span> <span class="op">==</span> <span class="bn">0x00000033</span> <span class="op">==</span> <span class="bn">0x33</span></span>
+<span id="cb164-3"><a href="ip-subnets-and-subnet-masks.html#cb164-3" aria-hidden="true" tabindex="-1"></a>(<span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">8</span>)  <span class="op">&amp;</span> <span class="bn">0xff</span> <span class="op">==</span> <span class="bn">0x00000064</span> <span class="op">==</span> <span class="bn">0x64</span></span>
+<span id="cb164-4"><a href="ip-subnets-and-subnet-masks.html#cb164-4" aria-hidden="true" tabindex="-1"></a>(<span class="bn">0xc633640a</span> <span class="op">&gt;&gt;</span> <span class="dv">0</span>)  <span class="op">&amp;</span> <span class="bn">0xff</span> <span class="op">==</span> <span class="bn">0x0000000a</span> <span class="op">==</span> <span class="bn">0x0a</span></span></code></pre></div>
+<p>And those are the individual bytes of the IP address.</p>
+<p>To get from there to dots-and-numbers, you can use an f-string or <code>.join()</code> in Python.</p>
+<h2 data-number="17.4" id="subnet-and-host-refresher"><span class="header-section-number">17.4</span> Subnet and Host Refresher</h2>
+<p>Recall that IP addresses are split into two portions: the subnet number and the host number. Some of the bits on the left side of the IP address are the network number, and the remaining bits on the right are the host number.</p>
+<p>Let’s look at an example where the left 24 bits (3 bytes) are the subnet number and the right 8 bits (1 byte) holds the host number.</p>
+<div class="sourceCode" id="cb165"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb165-1"><a href="ip-subnets-and-subnet-masks.html#cb165-1" aria-hidden="true" tabindex="-1"></a> Subnet   | Host</span>
+<span id="cb165-2"><a href="ip-subnets-and-subnet-masks.html#cb165-2" aria-hidden="true" tabindex="-1"></a>          | </span>
+<span id="cb165-3"><a href="ip-subnets-and-subnet-masks.html#cb165-3" aria-hidden="true" tabindex="-1"></a>198.51.100.10</span></code></pre></div>
+<p>So that represents host <code>10</code> on subnet <code>198.51.100.0</code>. (We replace the host bits with <code>0</code> when talking about the subnet number.)</p>
+<p>But I just said above, unilaterally, that there were 24 network bits in that IP address. That’s not very concise. So they invented slash notation.</p>
+<div class="sourceCode" id="cb166"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb166-1"><a href="ip-subnets-and-subnet-masks.html#cb166-1" aria-hidden="true" tabindex="-1"></a>198.51.100.0/24    24 bits are used for subnet</span></code></pre></div>
+<p>Or you could use it with an IP address:</p>
+<div class="sourceCode" id="cb167"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb167-1"><a href="ip-subnets-and-subnet-masks.html#cb167-1" aria-hidden="true" tabindex="-1"></a>198.51.100.10/24   Host 10 on subnet 198.51.100.0</span></code></pre></div>
+<p>Let’s try it with 16 bits for the network:</p>
+<div class="sourceCode" id="cb168"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb168-1"><a href="ip-subnets-and-subnet-masks.html#cb168-1" aria-hidden="true" tabindex="-1"></a>10.121.2.17/16    Host 2.17 on subnet 10.121.0.0</span></code></pre></div>
+<p>Get it?</p>
+<p>In those examples we used a multiple of 8 so it would align visually on a byte boundary, but there’s no reason you can’t have a fractional part of a byte left over for a subnet:</p>
+<div class="sourceCode" id="cb169"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb169-1"><a href="ip-subnets-and-subnet-masks.html#cb169-1" aria-hidden="true" tabindex="-1"></a>10.121.2.68/28    Host 4 on subnet 10.121.2.64</span></code></pre></div>
+<p>If you don’t see where the 4 and 64 came from in the previous example, try writing the bytes out in binary!</p>
+<h2 data-number="17.5" id="subnet-mask-refresher"><span class="header-section-number">17.5</span> Subnet Mask Refresher</h2>
+<p>What is the <em>subnet mask</em>? This is a run of <code>1</code> bits in binary that indicates which part of the IP address is the network portion. It is followed by a run of <code>0</code>s in binary that indicate which part is the host portion.</p>
+<p>It’s used to determine what subnet an IP address belongs to, or what part of the IP represents the host number.</p>
+<p>Let’s draw one in binary. We’ll use this example IP address:</p>
+<div class="sourceCode" id="cb170"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb170-1"><a href="ip-subnets-and-subnet-masks.html#cb170-1" aria-hidden="true" tabindex="-1"></a>198.51.100.10/24   Host 10 on subnet 198.51.100.0</span></code></pre></div>
+<p>Let’s first convert to binary. (There’s a hint here that the subnet mask is a bitwise-AND mask!)</p>
+<div class="sourceCode" id="cb171"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb171-1"><a href="ip-subnets-and-subnet-masks.html#cb171-1" aria-hidden="true" tabindex="-1"></a>11000110.00110011.01100100.00001010   198.51.100.10</span></code></pre></div>
+<p>And now, above it, let’s draw a run of 24 <code>1</code>s (because this is a <code>/24</code> subnet) followed by 8 <code>0</code>s (because the IP address is 32 bits total).</p>
+<div class="sourceCode" id="cb172"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb172-1"><a href="ip-subnets-and-subnet-masks.html#cb172-1" aria-hidden="true" tabindex="-1"></a>11111111.11111111.11111111.00000000   255.255.255.0  subnet mask!</span>
+<span id="cb172-2"><a href="ip-subnets-and-subnet-masks.html#cb172-2" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb172-3"><a href="ip-subnets-and-subnet-masks.html#cb172-3" aria-hidden="true" tabindex="-1"></a>11000110.00110011.01100100.00001010   198.51.100.10</span></code></pre></div>
+<p>That is the subnet mask that corresponds to a <code>/24</code> subnet! <code>255.255.255.0</code>!</p>
+<h2 data-number="17.6" id="computing-the-subnet-mask-from-slash-notation"><span class="header-section-number">17.6</span> Computing the Subnet Mask from Slash Notation</h2>
+<p>If I tell you a subnet is <code>/24</code>, how can you determine the subnet mask is <code>255.255.255.0</code>? Or if I tell you it’s <code>/28</code> that the mask is <code>255.255.255.240</code>?</p>
+<p>For a subnet <code>/24</code>, we need a run of 24 <code>1</code>s, followed by 8 <code>0</code>s.</p>
+<p>Look at the <a href="appendix-bitwise.html#appendix-bitwise">Appendix: Bitwise</a> for ways to generate runs of <code>1</code>s in binary and shift them over.</p>
+<p>Once you have that big binary number, it’s a matter of switching it back to dots-and-numbers notation, using the technique we outlined, above.</p>
+<p>Remember that subnets can end on any bit boundary. <code>/17</code> is a fine subnet. It doesn’t have to be a multiple of 8!</p>
+<h2 data-number="17.7" id="finding-the-subnet-for-an-ip-address"><span class="header-section-number">17.7</span> Finding the Subnet for an IP address</h2>
+<p>If you’re given an IP address with slash notation like this:</p>
+<div class="sourceCode" id="cb173"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb173-1"><a href="ip-subnets-and-subnet-masks.html#cb173-1" aria-hidden="true" tabindex="-1"></a>198.51.100.10/24   Host 10 on subnet 198.51.100.0</span></code></pre></div>
+<p>How can you extract just the subnet (198.51.100.0) and just the host</p>
+<p>You can do it with bitwise-AND!</p>
+<p>We can compute the subnet mask for <code>/24</code> and get <code>255.255.255.0</code>, as above.</p>
+<p>After that, let’s take a look in binary and AND these together:</p>
+<div class="sourceCode" id="cb174"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb174-1"><a href="ip-subnets-and-subnet-masks.html#cb174-1" aria-hidden="true" tabindex="-1"></a>  11111111.11111111.11111111.00000000   255.255.255.0  subnet mask</span>
+<span id="cb174-2"><a href="ip-subnets-and-subnet-masks.html#cb174-2" aria-hidden="true" tabindex="-1"></a>&amp; 11000110.00110011.01100100.00001010   198.51.100.10  IP address</span>
+<span id="cb174-3"><a href="ip-subnets-and-subnet-masks.html#cb174-3" aria-hidden="true" tabindex="-1"></a>-------------------------------------</span>
+<span id="cb174-4"><a href="ip-subnets-and-subnet-masks.html#cb174-4" aria-hidden="true" tabindex="-1"></a>  11000110.00110011.01100100.00000000   198.51.100.0  network number!</span></code></pre></div>
+<p>We can operate on the whole thing at once instead of a byte at a time, as well… we just need to cram those numbers together into a single value, like we did in the section above:</p>
+<div class="sourceCode" id="cb175"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb175-1"><a href="ip-subnets-and-subnet-masks.html#cb175-1" aria-hidden="true" tabindex="-1"></a>  11111111111111111111111100000000   255.255.255.0  subnet mask</span>
+<span id="cb175-2"><a href="ip-subnets-and-subnet-masks.html#cb175-2" aria-hidden="true" tabindex="-1"></a>&amp; 11000110001100110110010000001010   198.51.100.10  IP address</span>
+<span id="cb175-3"><a href="ip-subnets-and-subnet-masks.html#cb175-3" aria-hidden="true" tabindex="-1"></a>-------------------------------------</span>
+<span id="cb175-4"><a href="ip-subnets-and-subnet-masks.html#cb175-4" aria-hidden="true" tabindex="-1"></a>  11000110001100110110010000000000   198.51.100.0  network number</span></code></pre></div>
+<p>The AND works on the whole thing at once! Then we can convert back to dots-and-numbers notation like we did in the previous sections.</p>
+<p>Now what if you had the IP address and the subnet mask and wanted to get the <em>host</em> bits out of the IP address, not the network bits. Do you see how you could do it? (Hint: bitwise NOT!)</p>
+<p>Routers use this all the time–they are given an IP address and they need to know if it matches any subnets the router is connected to. So it masks out the IP address’s network number and compares it to all the subnets that router knows. And then forwards it toward the right one.</p>
+<h2 data-number="17.8" id="reflect-10"><span class="header-section-number">17.8</span> Reflect</h2>
+<ul>
+<li><p>What is the 32-bit (4-byte) representation of the IP address <code>10.100.30.90</code> in hex? In decimal? In binary? <!-- 0x0a641e5a, 174333530, 0b1010011001000001111001011010 --></p></li>
+<li><p>What is the dots-and-numbers IP address represented by the 32-bit number <code>0xc0a88225</code>? <!-- 192.168.130.37 --></p></li>
+<li><p>What is the dots-and-numbers IP address represented by the 32-bit decimal number <code>180229186</code>? <!-- 10.190.20.66 --></p></li>
+<li><p>What bitwise operations do you need to extract the second byte from the left (<code>0xff</code>) of the number <code>0x12ff5678</code>? <!--
+shift, AND
+(n >> 16) & 0xff  or  (n & 0xff0000) >> 16
+--></p></li>
+<li><p>What is the slash notation for subnet mask <code>255.255.0.0</code>? <!-- /16 --></p></li>
+<li><p>What is the subnet mask for network <code>192.168.1.12/24</code>? <!-- 255.255.255.0 --></p></li>
+<li><p>What are the numeric operations necessary to convert a slash subnet mask to a binary value? <!--
+shift, subtract 1
+((1 << m) - 1) << (32 - m)
+--></p></li>
+<li><p>Given an IP address value (in a single 32-bit number) and a subnet mask value (in a single 32-bit number), what bitwise operation do you need to perform to get the subnet number from the IP address? <!-- AND the two together --></p></li>
+</ul>
+<p>192.168.1.0 is the network number, but it’s not the subnet mask. The subnet mask is the dots-and-numbers value obtained from the slash notation. In this case it’s <code>/24</code>, which gives us <code>255.255.255.0</code>.</p>
+<!-- BG_NEW_CHAPTER -->
+<hr><div style="text-align:center"><span><a href="project-validating-a-tcp-packet.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="ip-routing.html" rel="next">Next</a></span></div></body>
+</html>

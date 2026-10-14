@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to Network Concepts</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+</head>
+<body>
+<div style="text-align:center"><span><a href="transmission-control-protocol-tcp.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="project-validating-a-tcp-packet.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="15" id="user-datagram-protocol-udp"><span class="header-section-number">15</span> User Datagram Protocol (UDP)</h1>
+<p>If you like to keep things simple and are a positive thinker, UDP is for you. It’s the near-ultimate in lightweight data transfer over the Internet.</p>
+<p>You fire UDP packets off and hope they arrive. Maybe they do, or maybe someone put a backhoe through a fiber optic cable, or there were cosmic rays, or a router got too congested or irate and just dropped it. Unceremoniously.</p>
+<p>It’s living on the Internet data edge! Virtually all the pleasant and reliable guarantees of TCP–gone!</p>
+<h2 data-number="15.1" id="goals-of-udp"><span class="header-section-number">15.1</span> Goals of UDP</h2>
+<ul>
+<li>Provide a way to send error-free data from one computer to another.</li>
+</ul>
+<p>That’s about it.</p>
+<p>The following are <strong>not</strong> goals of UDP:</p>
+<ul>
+<li>Provide data in order</li>
+<li>Provide data without loss</li>
+<li>Provide data without duplicates</li>
+</ul>
+<p>If those are needed, TCP is a better choice. UDP offers zero protection against lost or misordered data. The only guarantee is that <em>if</em> the data arrives, it will be correct.</p>
+<p>But what it does give you is really low overhead and quick response times. It doesn’t have any of the packet reassembly or flow control or ACK packets or any of the stuff TCP does. As a consequence, the header is much smaller.</p>
+<h2 data-number="15.2" id="location-in-the-network-stack-1"><span class="header-section-number">15.2</span> Location in the Network Stack</h2>
+<p>Recall the layers of the Network Stack:</p>
+<!-- CAPTION: Internet Layered Network Model -->
+<table>
+<colgroup>
+<col style="width: 60%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: center;">Layer</th>
+<th>Responsibility</th>
+<th>Example Protocols</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">Application</td>
+<td>Structured application data</td>
+<td>HTTP, FTP, TFTP, Telnet, SSH, SMTP, POP, IMAP</td>
+</tr>
+<tr>
+<td style="text-align: center;">Transport</td>
+<td>Data Integrity, packet splitting and reassembly</td>
+<td>TCP, UDP</td>
+</tr>
+<tr>
+<td style="text-align: center;">Internet</td>
+<td>Routing</td>
+<td>IP, IPv6, ICMP</td>
+</tr>
+<tr>
+<td style="text-align: center;">Link</td>
+<td>Physical, signals on wires</td>
+<td>Ethernet, PPP, token ring</td>
+</tr>
+</tbody>
+</table>
+<p>You can see UDP in there at the Transport Layer. IP below it is responsible for routing. And the application layer above it takes advantage of all the features UDP has to offer. Which isn’t a lot.</p>
+<h2 data-number="15.3" id="udp-ports"><span class="header-section-number">15.3</span> UDP Ports</h2>
+<p>UDP uses ports, similar to TCP. In fact, you can have a TCP program using the same port number as a different UDP program.</p>
+<p>IP uses IP addresses to identify hosts.</p>
+<p>But once on that host, the port number is what the OS uses to deliver the data to the correct process.</p>
+<p>By analogy, the IP address is like a street address, and the port number is like an apartment number at that street address.</p>
+<h2 data-number="15.4" id="udp-overview"><span class="header-section-number">15.4</span> UDP Overview</h2>
+<p>UDP is <em>connectionless</em>. You know how TCP takes the packet-switched network and makes it look like it’s a reliable connection between two computers? UDP doesn’t do that.</p>
+<p>You send a UDP datagram to an IP address and port. IP routes it there and the receiving computer sends it to the program that’s bound to that port.</p>
+<p>There’s no connection. It’s all on an individual packet basis.</p>
+<p>When the packet arrives, the receiver can tell which IP and port it came from. This way the receiver can send a response.</p>
+<h2 data-number="15.5" id="data-integrity-1"><span class="header-section-number">15.5</span> Data Integrity</h2>
+<p>There are a lot of things that can go wrong. Data can arrive out of order. It can be corrupted. It might be duplicated. Or maybe it doesn’t arrive at all.</p>
+<p>UDP barely has any mechanisms to handle all these contingencies.</p>
+<p>In fact, all it does is error detection.</p>
+<h3 data-number="15.5.1" id="error-detection-1"><span class="header-section-number">15.5.1</span> Error Detection</h3>
+<p>Before the sender sends out a segment, a <em>checksum</em> is computed for that packet.</p>
+<p>The checksum works exactly the same way as with TCP, except the UDP header is used. Compared to the TCP header, the UDP header is dead simple:</p>
+<div class="sourceCode" id="cb136"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb136-1"><a href="user-datagram-protocol-udp.html#cb136-1" aria-hidden="true" tabindex="-1"></a> 0      7 8     15 16    23 24    31  </span>
+<span id="cb136-2"><a href="user-datagram-protocol-udp.html#cb136-2" aria-hidden="true" tabindex="-1"></a>+--------+--------+--------+--------+ </span>
+<span id="cb136-3"><a href="user-datagram-protocol-udp.html#cb136-3" aria-hidden="true" tabindex="-1"></a>|     Source      |   Destination   | </span>
+<span id="cb136-4"><a href="user-datagram-protocol-udp.html#cb136-4" aria-hidden="true" tabindex="-1"></a>|      Port       |      Port       | </span>
+<span id="cb136-5"><a href="user-datagram-protocol-udp.html#cb136-5" aria-hidden="true" tabindex="-1"></a>+--------+--------+--------+--------+ </span>
+<span id="cb136-6"><a href="user-datagram-protocol-udp.html#cb136-6" aria-hidden="true" tabindex="-1"></a>|                 |                 | </span>
+<span id="cb136-7"><a href="user-datagram-protocol-udp.html#cb136-7" aria-hidden="true" tabindex="-1"></a>|     Length      |    Checksum     | </span>
+<span id="cb136-8"><a href="user-datagram-protocol-udp.html#cb136-8" aria-hidden="true" tabindex="-1"></a>+--------+--------+--------+--------+ </span>
+<span id="cb136-9"><a href="user-datagram-protocol-udp.html#cb136-9" aria-hidden="true" tabindex="-1"></a>|                                     </span>
+<span id="cb136-10"><a href="user-datagram-protocol-udp.html#cb136-10" aria-hidden="true" tabindex="-1"></a>|          data octets ...            </span>
+<span id="cb136-11"><a href="user-datagram-protocol-udp.html#cb136-11" aria-hidden="true" tabindex="-1"></a>+---------------- ...                 </span></code></pre></div>
+<p>When the receiver gets the packet, it computes its own checksum of that packet.</p>
+<p>If the two checksums match, the data is assumed to be error-free. If they differ, the data is discarded.</p>
+<p>That’s it. The receiver never even knows that there was some data aimed at it. It just vanishes into the ether.</p>
+<p>The checksum is a 16-bit number that is the result of piping all the UDP header and payload data and the IP addresses involved into a function that digests them down.</p>
+<p>This works the same way as the TCP checksum. (Jon Postel wrote the first RFCs for both TCP and UDP so it’s no surprise they use the same algorithm.)</p>
+<p>The details of how the checksum works are in this week’s project. Just substitute the UDP header for the TCP header.</p>
+<h2 data-number="15.6" id="maximum-payload-without-fragmentation"><span class="header-section-number">15.6</span> Maximum Payload Without Fragmentation</h2>
+<p>It’s a little ahead of schedule, but lower layers can decide to split a UDP packet up into smaller packets. Maybe there’s a part of the internet the UDP packet has to pass through that can only handle sending data of a certain size.</p>
+<p>We call this “fragmentation”, when a UDP packet is split among multiple IP packets.</p>
+<p>The maximum size packet that can be sent on any particular wire is called its MTU (maximum transmission unit). The smallest possible MTU on the Internet (IPv4) is 576 bytes. The biggest IP header is 60 bytes. And the UDP header is 8 bytes. So that leaves 576-60-8 = 508 bytes of payload that you can guarantee won’t be fragmented[^If you’re sending through a VPN, it might be less than this, but we’ll ignore that for sake of simplicity.]. Since the IP header is sometimes smaller than 60 bytes, lots of source say 512 bytes is the limit.</p>
+<p>Is fragmentation bad? Some routers might drop fragmented UDP packets. So staying under the minimum MTU is often a good idea with UDP.</p>
+<h2 data-number="15.7" id="whats-the-use"><span class="header-section-number">15.7</span> What’s the Use?</h2>
+<p>If UDP can drop packets all over the place, why ever use it?</p>
+<p>Well, the performance gain is notable, so that’s a draw.</p>
+<p>There are a number of circumstances you would use UDP:</p>
+<ol type="1">
+<li><p>If you don’t care if you lose a few packets. If you’re transmitting voice or video or even game frame information, it might be OK to drop a few packets. The stream will just glitch out for a moment and then continue when the next packets arrive.</p>
+<p>This is the most common use. Multiplayer high-framerate games use this from frame-by-frame updates, and also use TCP for lower bandwidth needs like chat messages and player inventory changes.</p></li>
+<li><p>If you can’t have packet loss, you can implement another protocol on top of UDP. The TFTP (Trivial File Transfer Protocol) does this. It puts a sequence number in each packet, and waits for the other side to respond with a TFTP ACK packet before sending another. It’s not fast because the sender has to wait for an ACK before sending the next packet, but it’s really simple to implement.</p>
+<p>This is a rarer use. TFTP is used by diskless computers that don’t have an OS installed. They transfer the OS over the network on boot, and need a small built-in network stack to make that happen. It’s a lot easier to implement an Ethernet/IP/UDP stack than an Ethernet/IP/TCP stack.</p></li>
+<li><p>You want to multiplex different data “streams” without having multiple TCP connections. You could tag each UDP packet with an identifier so that they all go in the right buckets upon arrival.</p></li>
+<li><p>Early processing is possible. Maybe you can start processing packet 4 even if packet 3 hasn’t arrived yet.</p></li>
+<li><p>Etc.</p></li>
+</ol>
+<h2 data-number="15.8" id="udp-datagram-sockets"><span class="header-section-number">15.8</span> UDP (Datagram) Sockets</h2>
+<p>With UDP sockets, there are some differences from TCP:</p>
+<ul>
+<li>You no longer call <code>listen()</code>, <code>connect()</code>, <code>accept()</code>, <code>send()</code>, or <code>recv()</code> because there’s no “connection”.</li>
+<li>You call <code>sendto()</code> to send UDP data.</li>
+<li>You call <code>recvfrom()</code> to receive UDP data.</li>
+</ul>
+<h3 data-number="15.8.1" id="server-procedure"><span class="header-section-number">15.8.1</span> Server Procedure</h3>
+<p>The general procedure for a server is to make a new socket of type <code>SOCK_DGRAM</code>, which is a datagram/UDP socket. (We have been using the default of <code>SOCK_STREAM</code> which is a TCP socket.)</p>
+<p>Then the server calls <code>bind()</code> to bind to a port. This port is where the client will send packets.</p>
+<p>After that, the server can loop receiving data and sending responses.</p>
+<p>When it receives data, <code>recvfrom()</code> will return the host and port the data was sent from. This can be used to reply, sending data back to the sender.</p>
+<p>Here’s an example server:</p>
+<div class="sourceCode" id="cb137"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb137-1"><a href="user-datagram-protocol-udp.html#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="co"># UDP Server</span></span>
+<span id="cb137-2"><a href="user-datagram-protocol-udp.html#cb137-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-3"><a href="user-datagram-protocol-udp.html#cb137-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb137-4"><a href="user-datagram-protocol-udp.html#cb137-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> socket</span>
+<span id="cb137-5"><a href="user-datagram-protocol-udp.html#cb137-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-6"><a href="user-datagram-protocol-udp.html#cb137-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Parse command line</span></span>
+<span id="cb137-7"><a href="user-datagram-protocol-udp.html#cb137-7" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb137-8"><a href="user-datagram-protocol-udp.html#cb137-8" aria-hidden="true" tabindex="-1"></a>    port <span class="op">=</span> <span class="bu">int</span>(sys.argv[<span class="dv">1</span>])</span>
+<span id="cb137-9"><a href="user-datagram-protocol-udp.html#cb137-9" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span>:</span>
+<span id="cb137-10"><a href="user-datagram-protocol-udp.html#cb137-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;usage: udpserver.py port&quot;</span>, <span class="bu">file</span><span class="op">=</span>sys.stderr)</span>
+<span id="cb137-11"><a href="user-datagram-protocol-udp.html#cb137-11" aria-hidden="true" tabindex="-1"></a>    sys.exit(<span class="dv">1</span>)</span>
+<span id="cb137-12"><a href="user-datagram-protocol-udp.html#cb137-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-13"><a href="user-datagram-protocol-udp.html#cb137-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Make new UDP (datagram) socket</span></span>
+<span id="cb137-14"><a href="user-datagram-protocol-udp.html#cb137-14" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> socket.socket(<span class="bu">type</span><span class="op">=</span>socket.SOCK_DGRAM)</span>
+<span id="cb137-15"><a href="user-datagram-protocol-udp.html#cb137-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-16"><a href="user-datagram-protocol-udp.html#cb137-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Bind to a port</span></span>
+<span id="cb137-17"><a href="user-datagram-protocol-udp.html#cb137-17" aria-hidden="true" tabindex="-1"></a>s.bind((<span class="st">&quot;&quot;</span>, port))</span>
+<span id="cb137-18"><a href="user-datagram-protocol-udp.html#cb137-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-19"><a href="user-datagram-protocol-udp.html#cb137-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Loop receiving data</span></span>
+<span id="cb137-20"><a href="user-datagram-protocol-udp.html#cb137-20" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb137-21"><a href="user-datagram-protocol-udp.html#cb137-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get data</span></span>
+<span id="cb137-22"><a href="user-datagram-protocol-udp.html#cb137-22" aria-hidden="true" tabindex="-1"></a>    data, sender <span class="op">=</span> s.recvfrom(<span class="dv">4096</span>)</span>
+<span id="cb137-23"><a href="user-datagram-protocol-udp.html#cb137-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;Got data from </span><span class="sc">{</span>sender[<span class="dv">0</span>]<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>sender[<span class="dv">1</span>]<span class="sc">}</span><span class="ss">: </span><span class="ch">\&quot;</span><span class="sc">{</span>data<span class="sc">.</span>decode()<span class="sc">}</span><span class="ch">\&quot;</span><span class="ss">&quot;</span>)</span>
+<span id="cb137-24"><a href="user-datagram-protocol-udp.html#cb137-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb137-25"><a href="user-datagram-protocol-udp.html#cb137-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Send a reply back to the original sender</span></span>
+<span id="cb137-26"><a href="user-datagram-protocol-udp.html#cb137-26" aria-hidden="true" tabindex="-1"></a>    s.sendto(<span class="ss">f&quot;Got your </span><span class="sc">{</span><span class="bu">len</span>(data)<span class="sc">}</span><span class="ss"> byte(s) of data!&quot;</span>.encode(), sender)</span></code></pre></div>
+<h3 data-number="15.8.2" id="client-procedure"><span class="header-section-number">15.8.2</span> Client Procedure</h3>
+<p>It’s about the same as the server procedure, except it’s not going to <code>bind()</code> to a specific port. It’ll let the OS choose bind port for it the first time it calls <code>sendto()</code>.</p>
+<p>Remember: UDP is unreliable, so there’s a chance the data might not arrive! If it doesn’t, just try again. (But it will almost certainly arrive running on localhost.)</p>
+<p>Example client that can communicate with the above server:</p>
+<div class="sourceCode" id="cb138"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb138-1"><a href="user-datagram-protocol-udp.html#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="co"># UDP Client</span></span>
+<span id="cb138-2"><a href="user-datagram-protocol-udp.html#cb138-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-3"><a href="user-datagram-protocol-udp.html#cb138-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> socket</span>
+<span id="cb138-4"><a href="user-datagram-protocol-udp.html#cb138-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb138-5"><a href="user-datagram-protocol-udp.html#cb138-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-6"><a href="user-datagram-protocol-udp.html#cb138-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Parse command line</span></span>
+<span id="cb138-7"><a href="user-datagram-protocol-udp.html#cb138-7" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb138-8"><a href="user-datagram-protocol-udp.html#cb138-8" aria-hidden="true" tabindex="-1"></a>    server <span class="op">=</span> sys.argv[<span class="dv">1</span>]</span>
+<span id="cb138-9"><a href="user-datagram-protocol-udp.html#cb138-9" aria-hidden="true" tabindex="-1"></a>    port <span class="op">=</span> <span class="bu">int</span>(sys.argv[<span class="dv">2</span>])</span>
+<span id="cb138-10"><a href="user-datagram-protocol-udp.html#cb138-10" aria-hidden="true" tabindex="-1"></a>    message <span class="op">=</span> sys.argv[<span class="dv">3</span>]</span>
+<span id="cb138-11"><a href="user-datagram-protocol-udp.html#cb138-11" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span>:</span>
+<span id="cb138-12"><a href="user-datagram-protocol-udp.html#cb138-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;usage: udpclient.py server port message&quot;</span>, <span class="bu">file</span><span class="op">=</span>sys.stderr)</span>
+<span id="cb138-13"><a href="user-datagram-protocol-udp.html#cb138-13" aria-hidden="true" tabindex="-1"></a>    sys.exit(<span class="dv">1</span>)</span>
+<span id="cb138-14"><a href="user-datagram-protocol-udp.html#cb138-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-15"><a href="user-datagram-protocol-udp.html#cb138-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Make new UDP (datagram) socket</span></span>
+<span id="cb138-16"><a href="user-datagram-protocol-udp.html#cb138-16" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> socket.socket(<span class="bu">type</span><span class="op">=</span>socket.SOCK_DGRAM)</span>
+<span id="cb138-17"><a href="user-datagram-protocol-udp.html#cb138-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-18"><a href="user-datagram-protocol-udp.html#cb138-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Send data to the server</span></span>
+<span id="cb138-19"><a href="user-datagram-protocol-udp.html#cb138-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;Sending message...&quot;</span>)</span>
+<span id="cb138-20"><a href="user-datagram-protocol-udp.html#cb138-20" aria-hidden="true" tabindex="-1"></a>s.sendto(message.encode(), (server, port))</span>
+<span id="cb138-21"><a href="user-datagram-protocol-udp.html#cb138-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-22"><a href="user-datagram-protocol-udp.html#cb138-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Wait for a reply</span></span>
+<span id="cb138-23"><a href="user-datagram-protocol-udp.html#cb138-23" aria-hidden="true" tabindex="-1"></a>data, sender <span class="op">=</span> s.recvfrom(<span class="dv">4096</span>)</span>
+<span id="cb138-24"><a href="user-datagram-protocol-udp.html#cb138-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Got reply: </span><span class="ch">\&quot;</span><span class="sc">{</span>data<span class="sc">.</span>decode()<span class="sc">}</span><span class="ch">\&quot;</span><span class="ss">&quot;</span>)</span>
+<span id="cb138-25"><a href="user-datagram-protocol-udp.html#cb138-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-26"><a href="user-datagram-protocol-udp.html#cb138-26" aria-hidden="true" tabindex="-1"></a>s.close()</span></code></pre></div>
+<h2 data-number="15.9" id="reflect-9"><span class="header-section-number">15.9</span> Reflect</h2>
+<ul>
+<li><p>What does TCP provide that UDP does not in terms of delivery guarantees?</p></li>
+<li><p>Why do people recommend keeping UDP packets small?</p></li>
+<li><p>Why is the UDP header so much smaller than the TCP header?</p></li>
+<li><p><code>sendto()</code> requires you specify a destination IP and port. Why does the TCP-oriented <code>send()</code> function not require those arguments?</p></li>
+<li><p>Why would people use UDP over TCP if it’s relatively unreliable?</p></li>
+</ul>
+<!-- BG_NEW_CHAPTER -->
+<hr><div style="text-align:center"><span><a href="transmission-control-protocol-tcp.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="project-validating-a-tcp-packet.html" rel="next">Next</a></span></div></body>
+</html>

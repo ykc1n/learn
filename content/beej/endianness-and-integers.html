@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to Network Concepts</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+</head>
+<body>
+<div style="text-align:center"><span><a href="project-a-better-web-server.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="parsing-packets.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="10" id="endianness-and-integers"><span class="header-section-number">10</span> Endianness and Integers</h1>
+<p>We’ve done some work transmitting text over the network. But now we want to do something else: we want to transfer binary integer data.</p>
+<p>Sure we <em>could</em> just convert the numbers to strings, but this is more wasteful than it needs to be. Binary representation is more compact and saves bandwidth.</p>
+<p>But the network can only send and receive bytes! How can we convert arbitrary numbers to single bytes?</p>
+<p>That’s what this chapter is all about.</p>
+<p>We want to:</p>
+<ul>
+<li>Convert integers to byte sequences</li>
+<li>Convert byte sequences back into integers</li>
+</ul>
+<p>And in this chapter we’ll look at:</p>
+<ul>
+<li>How numbers are represented by sequences of bytes</li>
+<li>What order those bytes go in</li>
+<li>How to convert a number to a sequence of bytes in Python</li>
+<li>How to convert a sequence of bytes to a number in Python</li>
+</ul>
+<p>Key points to look out for:</p>
+<ul>
+<li>Integers can be represented by sequences of bytes.</li>
+<li>We’ll convert integers to sequences of bytes before we transmit them over the network.</li>
+<li>We’ll convert sequences of bytes back into integers when we receive them over the network.</li>
+<li><em>Big-Endian</em> and <em>Little-Endian</em> are two different ways of ordering those sequences of bytes.</li>
+<li>Python offers built-in functionality for converting integers to sequences of bytes and back again.</li>
+</ul>
+<h2 data-number="10.1" id="integer-representations"><span class="header-section-number">10.1</span> Integer Representations</h2>
+<p>In this section we’ll dive deep into how an integer can be represented by a sequence of individual bytes.</p>
+<h3 data-number="10.1.1" id="decimal-byte-representation"><span class="header-section-number">10.1.1</span> Decimal Byte Representation</h3>
+<p>Let’s look at how integers are represented as sequences of bytes. These sequences of bytes are what we’ll send across the network to send integer values to other systems.</p>
+<p>A single byte (in this context well define a byte to be the usual 8 bits) can encode binary values from <code>00000000</code> to <code>11111111</code>. In decimal, these numbers go from 0 to 255.</p>
+<p>So what happens if you want to store number larger than 255? Like 256? In that case, you need to use a second byte to store the additional value.</p>
+<p>The more bytes you use to represent an integer, the larger the range of integers you can represent. One byte can store from 0 to 255. Two bytes can store from 0 to 65535.</p>
+<p>Thinking about it another way, 65536 is the number of combinations of 1s and 0s you can have in a 16-bit number.</p>
+<blockquote>
+<p>This section is talking about <strong>non-negative integers</strong> only. Floating point numbers use a <a href="https://en.wikipedia.org/wiki/IEEE_754#Basic_and_interchange_formats">different encoding</a>. Negative integers use a similar technique to positive, but we’ll keep it simple for now and ignore them.</p>
+</blockquote>
+<p>Let’s take a look what happens when we count up from 253 to 259 in a 16-bit number. Since 259 is bigger than a single byte can hold, we’ll use two bytes (holding numbers from 0 to 255), with the corresponding decimal value represented on the right:</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb83-1"><a href="endianness-and-integers.html#cb83-1" aria-hidden="true" tabindex="-1"></a>  0 253   represents 253</span>
+<span id="cb83-2"><a href="endianness-and-integers.html#cb83-2" aria-hidden="true" tabindex="-1"></a>  0 254   represents 254</span>
+<span id="cb83-3"><a href="endianness-and-integers.html#cb83-3" aria-hidden="true" tabindex="-1"></a>  0 255   represents 255</span>
+<span id="cb83-4"><a href="endianness-and-integers.html#cb83-4" aria-hidden="true" tabindex="-1"></a>  1   0   represents 256</span>
+<span id="cb83-5"><a href="endianness-and-integers.html#cb83-5" aria-hidden="true" tabindex="-1"></a>  1   1   represents 257</span>
+<span id="cb83-6"><a href="endianness-and-integers.html#cb83-6" aria-hidden="true" tabindex="-1"></a>  1   2   represents 258</span>
+<span id="cb83-7"><a href="endianness-and-integers.html#cb83-7" aria-hidden="true" tabindex="-1"></a>  1   3   represents 259</span></code></pre></div>
+<p>Notice that the byte on the right “rolled over” from <code>255</code> to <code>0</code> like an odometer. It’s almost like that byte is the “ones place” and the byte on the left is the “256s place”… like looking at a base-256 numbering system, almost.</p>
+<p>We could compute the decimal value of the number by taking the first byte and multiplying it by 256, then adding on the value of the second byte:</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb84-1"><a href="endianness-and-integers.html#cb84-1" aria-hidden="true" tabindex="-1"></a>1  * 256 +   3 = 259</span></code></pre></div>
+<p>Or in this example, where two bytes with values <code>17</code> and <code>178</code> represent the value <code>4530</code>:</p>
+<div class="sourceCode" id="cb85"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb85-1"><a href="endianness-and-integers.html#cb85-1" aria-hidden="true" tabindex="-1"></a>17 * 256 + 178 = 4530</span></code></pre></div>
+<p>Neither <code>17</code> not <code>178</code> are larger than <code>255</code>, so they both fit in a single byte each.</p>
+<p>So every integer can be perfectly represented by a sequence of bytes. You just need more bytes in the sequence to represent larger numbers.</p>
+<h3 data-number="10.1.2" id="binary-byte-representations"><span class="header-section-number">10.1.2</span> Binary Byte Representations</h3>
+<p>Binary, hexadecimal, and decimal are just all different “languages” for writing down values.</p>
+<p>So we could rewrite the entire previous section of the document by merely translating all the decimal numbers to binary, and it would still be just as true.</p>
+<p>In fact, let’s do it for the example from the previous section. Remember: this is numerically equivalent–we just changed the numbers from decimal to binary. All other concepts are identical.</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb86-1"><a href="endianness-and-integers.html#cb86-1" aria-hidden="true" tabindex="-1"></a>00000000 11111101    represents  11111101 (253 decimal)</span>
+<span id="cb86-2"><a href="endianness-and-integers.html#cb86-2" aria-hidden="true" tabindex="-1"></a>00000000 11111110    represents  11111110 (254 decimal)</span>
+<span id="cb86-3"><a href="endianness-and-integers.html#cb86-3" aria-hidden="true" tabindex="-1"></a>00000000 11111111    represents  11111111 (255 decimal)</span>
+<span id="cb86-4"><a href="endianness-and-integers.html#cb86-4" aria-hidden="true" tabindex="-1"></a>00000001 00000000    represents 100000000 (256 decimal)</span>
+<span id="cb86-5"><a href="endianness-and-integers.html#cb86-5" aria-hidden="true" tabindex="-1"></a>00000001 00000001    represents 100000001 (257 decimal)</span>
+<span id="cb86-6"><a href="endianness-and-integers.html#cb86-6" aria-hidden="true" tabindex="-1"></a>00000001 00000010    represents 100000010 (258 decimal)</span>
+<span id="cb86-7"><a href="endianness-and-integers.html#cb86-7" aria-hidden="true" tabindex="-1"></a>00000001 00000011    represents 100000011 (259 decimal)</span></code></pre></div>
+<p>But wait a second–see the pattern? If you just stick the two bytes together you end up with the exact same number as the binary representation! (Ignoring leading zeros.)</p>
+<p>Really all we’ve done is take the binary representation of a number and split it up into chunks of 8 bits. We could take any arbitrary number like 1,256,616,290,962 decimal and convert it to binary:</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb87-1"><a href="endianness-and-integers.html#cb87-1" aria-hidden="true" tabindex="-1"></a>10010010010010100001010101110101010010010</span></code></pre></div>
+<p>and do the same thing, split it up into chunks of 8 bits:</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb88-1"><a href="endianness-and-integers.html#cb88-1" aria-hidden="true" tabindex="-1"></a>1 00100100 10010100 00101010 11101010 10010010</span></code></pre></div>
+<p>Since we’re packing it into bytes, we should pad that leading <code>1</code> out to 8 bits like so:</p>
+<div class="sourceCode" id="cb89"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb89-1"><a href="endianness-and-integers.html#cb89-1" aria-hidden="true" tabindex="-1"></a>00000001 00100100 10010100 00101010 11101010 10010010</span></code></pre></div>
+<p>And there you have it, the byte-by-byte representation of the number 1,256,616,290,962.</p>
+<h3 data-number="10.1.3" id="hexadecimal-byte-representations"><span class="header-section-number">10.1.3</span> Hexadecimal Byte Representations</h3>
+<p>Again, it doesn’t matter what number base we use–they’re just all different “languages” for representing a numeric value.</p>
+<p>Programmers like hex because it’s very compatible with bytes (each byte is 2 hex digits). Let’s do the same chart again, this time in hex:</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb90-1"><a href="endianness-and-integers.html#cb90-1" aria-hidden="true" tabindex="-1"></a>00 fd    represents 00fd (253 decimal)</span>
+<span id="cb90-2"><a href="endianness-and-integers.html#cb90-2" aria-hidden="true" tabindex="-1"></a>00 fe    represents 00fe (254 decimal)</span>
+<span id="cb90-3"><a href="endianness-and-integers.html#cb90-3" aria-hidden="true" tabindex="-1"></a>00 ff    represents 00ff (255 decimal)</span>
+<span id="cb90-4"><a href="endianness-and-integers.html#cb90-4" aria-hidden="true" tabindex="-1"></a>01 00    represents 0100 (256 decimal)</span>
+<span id="cb90-5"><a href="endianness-and-integers.html#cb90-5" aria-hidden="true" tabindex="-1"></a>01 01    represents 0101 (257 decimal)</span>
+<span id="cb90-6"><a href="endianness-and-integers.html#cb90-6" aria-hidden="true" tabindex="-1"></a>01 02    represents 0102 (258 decimal)</span>
+<span id="cb90-7"><a href="endianness-and-integers.html#cb90-7" aria-hidden="true" tabindex="-1"></a>01 03    represents 0103 (259 decimal)</span></code></pre></div>
+<p>Look at that again! The hex representation of the number is the same as the two bytes just crammed together! Super-duper convenient.</p>
+<h2 data-number="10.2" id="endianness"><span class="header-section-number">10.2</span> Endianness</h2>
+<p>Ready to get a wrench thrown in the works?</p>
+<p>I just finished telling you that a number like (in hex):</p>
+<div class="sourceCode" id="cb91"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb91-1"><a href="endianness-and-integers.html#cb91-1" aria-hidden="true" tabindex="-1"></a>45f2</span></code></pre></div>
+<p>can be represented by these two bytes:</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb92-1"><a href="endianness-and-integers.html#cb92-1" aria-hidden="true" tabindex="-1"></a>45 f2</span></code></pre></div>
+<p>But guess what! Some systems will represent <code>0x45f2</code> as:</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb93-1"><a href="endianness-and-integers.html#cb93-1" aria-hidden="true" tabindex="-1"></a>f2 45</span></code></pre></div>
+<p>It’s backwards! This is analogous to me saying “I want 123 pieces of toast” when in fact I really wanted 321!</p>
+<p>There’s a name for putting the bytes backward like this. We say such representations are <em>little endian</em>.</p>
+<p>This means the “little end” of the number (the “ones” byte, if I can call it that) comes at the front end.</p>
+<p>The more-normal, more-forward way to write it (like we did at first, where the number <code>0x45f2</code> was reasonably represented in the order <code>45 f2</code>) is called <em>big endian</em>. The byte in the largest value slot (also called the <em>most-significant byte</em>) is at the front end.</p>
+<p>The bad news is that virtually all Intel CPU models are little-endian, as are the Apple M-series. So, effectively, everyone.</p>
+<p>The good news is that <strong>all network numbers are transmitted as big-endian</strong>, the sensible way. So we get to think about our bytes in a sensible order.</p>
+<blockquote>
+<p>And when I say “all network numbers”, I mean “a certain amount of them”[^—Monty Python]. If both sides agree to transmit in little endian, there’s no law against that. This would make sense if the sender and receiver were both little-endian architectures—why waste time reversing bytes just to reverse them back? But the majority of protocols specify big-endian. And generally-speaking it’s not a practical issue since most CPUs can reverse bytes in a word really quickly.</p>
+</blockquote>
+<p>Big-endian byte order is called <em>network byte order</em> in network contexts for this reason.</p>
+<h2 data-number="10.3" id="python-and-endianness"><span class="header-section-number">10.3</span> Python and Endianness</h2>
+<p>What if you have some number in Python, how do you convert it into a byte sequence?</p>
+<p>Luckily, there’s a built-in function to help with that: <code>.to_bytes()</code>.</p>
+<p>And there’s one to go the other way: <code>.from_bytes()</code></p>
+<p>It even allows you to specify the endianness! Since we’ll be using this to transmit bytes over the network, we’ll always use <code>"big"</code> endian.</p>
+<h3 data-number="10.3.1" id="converting-a-number-to-bytes"><span class="header-section-number">10.3.1</span> Converting a Number to Bytes</h3>
+<p>Here’s a demo where we take the number 3490 and store it as bytestring of 2 bytes in big-endian order.</p>
+<p>Note that we pass two things into the <code>.to_bytes()</code> method: the number of bytes for the result, and <code>"big"</code> if it’s to be big-endian, or <code>"little"</code> if it’s to be little endian.</p>
+<blockquote>
+<p>Newer versions of Python default to <code>"big"</code>. In older versions, you still have to be explicit.</p>
+</blockquote>
+<div class="sourceCode" id="cb94"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb94-1"><a href="endianness-and-integers.html#cb94-1" aria-hidden="true" tabindex="-1"></a>n = 3490</span>
+<span id="cb94-2"><a href="endianness-and-integers.html#cb94-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-3"><a href="endianness-and-integers.html#cb94-3" aria-hidden="true" tabindex="-1"></a>bytes = n.to_bytes(2, &quot;big&quot;)</span></code></pre></div>
+<p>If we print them out we’ll see the byte values:</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb95-1"><a href="endianness-and-integers.html#cb95-1" aria-hidden="true" tabindex="-1"></a>for b in bytes:</span>
+<span id="cb95-2"><a href="endianness-and-integers.html#cb95-2" aria-hidden="true" tabindex="-1"></a>    print(b)</span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb96-1"><a href="endianness-and-integers.html#cb96-1" aria-hidden="true" tabindex="-1"></a>13</span>
+<span id="cb96-2"><a href="endianness-and-integers.html#cb96-2" aria-hidden="true" tabindex="-1"></a>162</span></code></pre></div>
+<p>Those are the big-endian byte values that make up the number 3490. We can verify that <code>13 * 256 + 162 == 3490</code> easily enough.</p>
+<p>If you try to store the number 70,000 in two bytes, you’ll get an <code>OverflowError</code>. Two bytes isn’t large enough to store values over 65535–you’ll need to add another byte.</p>
+<p>Let’s do one more example in hex:</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb97-1"><a href="endianness-and-integers.html#cb97-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bn">0xABCD</span></span>
+<span id="cb97-2"><a href="endianness-and-integers.html#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="bu">bytes</span> <span class="op">=</span> n.to_bytes(<span class="dv">2</span>, <span class="st">&quot;big&quot;</span>)</span>
+<span id="cb97-3"><a href="endianness-and-integers.html#cb97-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb97-4"><a href="endianness-and-integers.html#cb97-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> b <span class="kw">in</span> <span class="bu">bytes</span>:</span>
+<span id="cb97-5"><a href="endianness-and-integers.html#cb97-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>b<span class="sc">:02X}</span><span class="ss">&quot;</span>)  <span class="co"># Print in hex</span></span></code></pre></div>
+<p>prints:</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb98-1"><a href="endianness-and-integers.html#cb98-1" aria-hidden="true" tabindex="-1"></a>AB</span>
+<span id="cb98-2"><a href="endianness-and-integers.html#cb98-2" aria-hidden="true" tabindex="-1"></a>CD</span></code></pre></div>
+<p>It’s the same digits as the original value stored in <code>n</code>!</p>
+<h3 data-number="10.3.2" id="convert-bytes-back-to-a-number"><span class="header-section-number">10.3.2</span> Convert Bytes Back to a Number</h3>
+<p>Let’s take the full tour. We’re going to make a hex number and convert it to bytes, like we did in the previous section. Then we’ll even print out the bytestring to see what it looks like.</p>
+<p>Then we’ll convert that bytestring back to a number and print it out to make sure it matches the original.</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb99-1"><a href="endianness-and-integers.html#cb99-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bn">0x0102</span></span>
+<span id="cb99-2"><a href="endianness-and-integers.html#cb99-2" aria-hidden="true" tabindex="-1"></a><span class="bu">bytes</span> <span class="op">=</span> n.to_bytes(<span class="dv">2</span>, <span class="st">&quot;big&quot;</span>)</span>
+<span id="cb99-3"><a href="endianness-and-integers.html#cb99-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-4"><a href="endianness-and-integers.html#cb99-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">bytes</span>)</span></code></pre></div>
+<p>gives the output:</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb100-1"><a href="endianness-and-integers.html#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="st">b&#39;</span><span class="ch">\x01\x02</span><span class="st">&#39;</span></span></code></pre></div>
+<p>The <code>b</code> at the front means this is a bytestring (as opposed to a regular string) and the <code>\x</code> is an escape sequence that appears before a 2-digit hex number.</p>
+<p>Since our original number was <code>0x0102</code>, it makes sense that the two bytes in the byte string have values <code>\x01</code> and <code>\x02</code>.</p>
+<p>Now let’s convert that string back and print in hex:</p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb101-1"><a href="endianness-and-integers.html#cb101-1" aria-hidden="true" tabindex="-1"></a>v <span class="op">=</span> <span class="bu">int</span>.from_bytes(<span class="bu">bytes</span>, <span class="st">&quot;big&quot;</span>)</span>
+<span id="cb101-2"><a href="endianness-and-integers.html#cb101-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb101-3"><a href="endianness-and-integers.html#cb101-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;</span><span class="sc">{</span>v<span class="sc">:04x}</span><span class="ss">&quot;</span>)</span></code></pre></div>
+<p>And that prints:</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb102-1"><a href="endianness-and-integers.html#cb102-1" aria-hidden="true" tabindex="-1"></a>0102</span></code></pre></div>
+<p>just like our original value!</p>
+<h2 data-number="10.4" id="reflect-6"><span class="header-section-number">10.4</span> Reflect</h2>
+<ul>
+<li><p>Using only the <code>.to_bytes()</code> and <code>.from_bytes()</code> methods, how can you swap the byte order in a 2-byte number? (That is reverse the bytes.) How can you do that without using any loops or other methods? (Hint: <code>"big"</code> and <code>"little"</code>!)</p></li>
+<li><p>Describe in your own words the difference between Big-Endian and Little-Endian.</p></li>
+<li><p>What is Network Byte Order?</p></li>
+<li><p>Why not just send an entire number at once instead of breaking it into bytes?</p></li>
+<li><p>Little-endian just seems backwards. Why does it even exist? Do a little Internet searching to answer this question.</p></li>
+</ul>
+<!-- BG_NEW_CHAPTER -->
+<hr><div style="text-align:center"><span><a href="project-a-better-web-server.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="parsing-packets.html" rel="next">Next</a></span></div></body>
+</html>

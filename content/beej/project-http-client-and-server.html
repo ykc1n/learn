@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to Network Concepts</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+</head>
+<body>
+<div style="text-align:center"><span><a href="the-layered-network-model.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="the-internet-protocol-ip.html" rel="next">Next</a></span></div><hr>
+<h1 data-number="5" id="project-http-client-and-server"><span class="header-section-number">5</span> Project: HTTP Client and Server</h1>
+<p>We’re going to write a sockets program that can download files from a web server! This is going to be our “web client”. This will work with almost any web server out there, if we code it right.</p>
+<p>And as if that’s not enough, we’re going to follow it up by writing a simple web server! This program will be able to handle requests from the web client we write… or indeed any other web client such as Chrome or Firefox!</p>
+<p>These programs are going to speak a protocol you have probably heard of: HTTP, the HyperText Transport Protocol.</p>
+<p>And because they speak HTTP, and web browsers like Chrome speak HTTP, they should be able to communicate!</p>
+<h2 data-number="5.1" id="restrictions"><span class="header-section-number">5.1</span> Restrictions</h2>
+<p>In order to better understand the sockets API at a lower level, this project may <strong>not</strong> use any of the following helper functions:</p>
+<ul>
+<li>The <code>socket.create_connection()</code> function.</li>
+<li>The <code>socket.create_server()</code> function.</li>
+<li>Anything in the <code>urllib</code> modules.</li>
+</ul>
+<p>After coding up the project, it should be more obvious how these helper functions are implemented.</p>
+<h2 data-number="5.2" id="python-character-encoding"><span class="header-section-number">5.2</span> Python Character Encoding</h2>
+<p>The sockets in Python send and receive sequences of bytes, which are different than Python strings. You’ll have to convert back and forth when you want to send a string, or when you want to print a byte sequence as a string.</p>
+<p>The sequences of bytes depend on the <em>character encoding</em> used by the string. The character encoding defines which bytes correspond to which characters. Some encodings you might have heard of are ASCII and UTF-8. There are hundreds.</p>
+<p>The default character encoding of the web is “ISO-8859-1”.</p>
+<p>This is important because you have to encode your Python strings into a sequence of bytes and you can tell it the encoding when you do that. (It defaults to UTF-8.)</p>
+<p>To convert from a Python string to an ISO-8859-1 sequence of bytes:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb11-1"><a href="project-http-client-and-server.html#cb11-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> <span class="st">&quot;Hello, world!&quot;</span>          <span class="co"># String</span></span>
+<span id="cb11-2"><a href="project-http-client-and-server.html#cb11-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> s.encode(<span class="st">&quot;ISO-8859-1&quot;</span>)   <span class="co"># Sequence of bytes</span></span></code></pre></div>
+<p>That sequence of bytes is ready to send over the socket.</p>
+<p>To convert from a byte sequence you received from a socket in ISO-8859-1 format to a string:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb12-1"><a href="project-http-client-and-server.html#cb12-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> b.decode(<span class="st">&quot;ISO-8859-1&quot;</span>)</span></code></pre></div>
+<p>And then it’s ready to print.</p>
+<p>Of course, if the data is not encoded with ISO-8859-1, you’ll get weird characters in your string or an error.</p>
+<p>The encodings ASCII, UTF-8, and ISO-8859-1 are all the same for your basic latin letters, numbers, and punctuation, so your strings will all work as expected unless you start getting into some weird Unicode characters.</p>
+<p>If you’re writing this in C, it’s probably best just not to worry about it and print the bytes out as you get them. A few might be garbage, but it’ll work for the most part.</p>
+<h2 data-number="5.3" id="http-summary"><span class="header-section-number">5.3</span> HTTP Summary</h2>
+<p>HTTP operates on the concept of <em>requests</em> and <em>responses</em>. The client requests a web page, the server responds by sending it back.</p>
+<p>A simple HTTP request from a client looks like this:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb13-1"><a href="project-http-client-and-server.html#cb13-1" aria-hidden="true" tabindex="-1"></a>GET / HTTP/1.1</span>
+<span id="cb13-2"><a href="project-http-client-and-server.html#cb13-2" aria-hidden="true" tabindex="-1"></a>Host: example.com</span>
+<span id="cb13-3"><a href="project-http-client-and-server.html#cb13-3" aria-hidden="true" tabindex="-1"></a>Connection: close</span></code></pre></div>
+<p>That shows the request <em>header</em> which consists of the request method, path, and protocol on the first line, followed by any number of header fields. There is a blank line at the end of the header.</p>
+<p>This request is saying “Get the root web page from the server example.com and I’m going to close the connection as soon as I get your response.”</p>
+<p>Ends-of-line are delimited by a Carriage Return/Linefeed combination. In Python or C, you write a CRLF like this:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb14-1"><a href="project-http-client-and-server.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;</span><span class="ch">\r\n</span><span class="co">&quot;</span></span></code></pre></div>
+<p>If you were requesting a specific file, it would be on that first line, for example:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb15-1"><a href="project-http-client-and-server.html#cb15-1" aria-hidden="true" tabindex="-1"></a>GET /path/to/file.html HTTP/1.1</span></code></pre></div>
+<p>(And if there were a payload to go with this header, it would go just after the blank line. There would also be a <code>Content-Length</code> header giving the length of the payload in bytes. We don’t have to worry about this for this project.)</p>
+<p>A simple HTTP response from a server looks like:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb16-1"><a href="project-http-client-and-server.html#cb16-1" aria-hidden="true" tabindex="-1"></a>HTTP/1.1 200 OK</span>
+<span id="cb16-2"><a href="project-http-client-and-server.html#cb16-2" aria-hidden="true" tabindex="-1"></a>Content-Type: text/plain</span>
+<span id="cb16-3"><a href="project-http-client-and-server.html#cb16-3" aria-hidden="true" tabindex="-1"></a>Content-Length: 6</span>
+<span id="cb16-4"><a href="project-http-client-and-server.html#cb16-4" aria-hidden="true" tabindex="-1"></a>Connection: close</span>
+<span id="cb16-5"><a href="project-http-client-and-server.html#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="project-http-client-and-server.html#cb16-6" aria-hidden="true" tabindex="-1"></a>Hello!</span></code></pre></div>
+<p>This response says, “Your request succeeded and here’s a response that’s 6 bytes of plain text. Also, I’m going to close the connection right after I send this to you. And the response payload is ‘Hello!’.”</p>
+<p>Notice that the <code>Content-Length</code> is set to the size of the payload: 6 bytes for <code>Hello!</code>.</p>
+<p>Another common <code>Content-Type</code> is <code>text/html</code> when the payload has HTML data in it.</p>
+<h2 data-number="5.4" id="the-client"><span class="header-section-number">5.4</span> The Client</h2>
+<p>The client should be named <code>webclient.py</code>.</p>
+<p>You can write the client before the server first and then test it on a real, existing webserver. No need to write both the client and server before you test this.</p>
+<p>The goal with the client is that you can run it from the command line, like so:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb17-1"><a href="project-http-client-and-server.html#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python webclient.py example.com</span></code></pre></div>
+<p>for output like this:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb18-1"><a href="project-http-client-and-server.html#cb18-1" aria-hidden="true" tabindex="-1"></a>HTTP/1.1 200 OK</span>
+<span id="cb18-2"><a href="project-http-client-and-server.html#cb18-2" aria-hidden="true" tabindex="-1"></a>Age: 586480</span>
+<span id="cb18-3"><a href="project-http-client-and-server.html#cb18-3" aria-hidden="true" tabindex="-1"></a>Cache-Control: max-age=604800</span>
+<span id="cb18-4"><a href="project-http-client-and-server.html#cb18-4" aria-hidden="true" tabindex="-1"></a>Content-Type: text/html; charset=UTF-8</span>
+<span id="cb18-5"><a href="project-http-client-and-server.html#cb18-5" aria-hidden="true" tabindex="-1"></a>Date: Thu, 22 Sep 2022 22:20:41 GMT</span>
+<span id="cb18-6"><a href="project-http-client-and-server.html#cb18-6" aria-hidden="true" tabindex="-1"></a>Etag: &quot;3147526947+ident&quot;</span>
+<span id="cb18-7"><a href="project-http-client-and-server.html#cb18-7" aria-hidden="true" tabindex="-1"></a>Expires: Thu, 29 Sep 2022 22:20:41 GMT</span>
+<span id="cb18-8"><a href="project-http-client-and-server.html#cb18-8" aria-hidden="true" tabindex="-1"></a>Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT</span>
+<span id="cb18-9"><a href="project-http-client-and-server.html#cb18-9" aria-hidden="true" tabindex="-1"></a>Server: ECS (sec/96EE)</span>
+<span id="cb18-10"><a href="project-http-client-and-server.html#cb18-10" aria-hidden="true" tabindex="-1"></a>Vary: Accept-Encoding</span>
+<span id="cb18-11"><a href="project-http-client-and-server.html#cb18-11" aria-hidden="true" tabindex="-1"></a>X-Cache: HIT</span>
+<span id="cb18-12"><a href="project-http-client-and-server.html#cb18-12" aria-hidden="true" tabindex="-1"></a>Content-Length: 1256</span>
+<span id="cb18-13"><a href="project-http-client-and-server.html#cb18-13" aria-hidden="true" tabindex="-1"></a>Connection: close</span>
+<span id="cb18-14"><a href="project-http-client-and-server.html#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-15"><a href="project-http-client-and-server.html#cb18-15" aria-hidden="true" tabindex="-1"></a>&lt;!doctype html&gt;</span>
+<span id="cb18-16"><a href="project-http-client-and-server.html#cb18-16" aria-hidden="true" tabindex="-1"></a>&lt;html&gt;</span>
+<span id="cb18-17"><a href="project-http-client-and-server.html#cb18-17" aria-hidden="true" tabindex="-1"></a>&lt;head&gt;</span>
+<span id="cb18-18"><a href="project-http-client-and-server.html#cb18-18" aria-hidden="true" tabindex="-1"></a>    &lt;title&gt;Example Domain&lt;/title&gt;</span>
+<span id="cb18-19"><a href="project-http-client-and-server.html#cb18-19" aria-hidden="true" tabindex="-1"></a>    ...</span></code></pre></div>
+<p>(Output truncated, but it would show the rest of the HTML for the site.)</p>
+<p>Notice how the first part of the output is the HTTP response with all those fields from the server, and then there’s a blank line, and everything following the blank line is the response payload.</p>
+<p><strong>ALSO</strong>: you need to be able specify a port number to connect to on the command line. This defaults to port 80 if not specified. So you could connect to a webserver on a different port like so:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="project-http-client-and-server.html#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python webclient.py example.com 8088</span></code></pre></div>
+<p>Which would get you to port 8088.</p>
+<p>First things first, you need the socket module in Python, so</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb20-1"><a href="project-http-client-and-server.html#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> socket</span></code></pre></div>
+<p>at the top. Then you have access to the functionality.</p>
+<p>Here are some Python-specifics:</p>
+<ul>
+<li><p>Use <code>socket.socket()</code> to make a new socket. You don’t have to pass it anything–the default parameter values work for this project.</p></li>
+<li><p>Use <code>s.connect()</code> to connect the new socket to a destination. You can bypass the DNS step since <code>.connect()</code> does it for you.</p>
+<p>This function takes a tuple as an argument that contains the host and port to connect to, e.g.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb21-1"><a href="project-http-client-and-server.html#cb21-1" aria-hidden="true" tabindex="-1"></a>(<span class="st">&quot;example.com&quot;</span>, <span class="dv">80</span>)</span></code></pre></div></li>
+<li><p>Build and send the HTTP request. You can use the simple HTTP request shown above. <strong>Don’t forget the blank line at the end of the header, and don’t forget to end all lines with <code>"\r\n"</code>!</strong></p>
+<p>I recommend using the <code>s.sendall()</code> method to do this. You could use <code>.send()</code> instead but it might only send part of the data.</p>
+<p>(C programmers will find an implementation of <code>sendall()</code> in Beej’s Guide.)</p></li>
+<li><p>Receive the web response with the <code>s.recv()</code> method. It will return some bytes in response. You’ll have to call it several times in a loop to get all the data from bigger sites.</p>
+<p>It will return a byte array of zero elements when the server closes the connection and there’s no more data to read, e.g.:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb22-1"><a href="project-http-client-and-server.html#cb22-1" aria-hidden="true" tabindex="-1"></a>d <span class="op">=</span> s.recv(<span class="dv">4096</span>)  <span class="co"># Receive up to 4096 bytes</span></span>
+<span id="cb22-2"><a href="project-http-client-and-server.html#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">len</span>(d) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb22-3"><a href="project-http-client-and-server.html#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># all done!</span></span></code></pre></div></li>
+<li><p>Call <code>s.close()</code> on your socket when you’re done.</p></li>
+</ul>
+<p>Test the client by hitting some websites with it:</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb23-1"><a href="project-http-client-and-server.html#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python webclient.py example.com</span>
+<span id="cb23-2"><a href="project-http-client-and-server.html#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python webclient.py google.com</span>
+<span id="cb23-3"><a href="project-http-client-and-server.html#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python webclient.py oregonstate.edu</span></code></pre></div>
+<h2 data-number="5.5" id="the-server"><span class="header-section-number">5.5</span> The Server</h2>
+<p>The server should be named <code>webserver.py</code>.</p>
+<p>You’ll launch the webserver from the command line like so:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb24-1"><a href="project-http-client-and-server.html#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python webserver.py</span></code></pre></div>
+<p>and that should start it listening on port 28333.</p>
+<p><strong>ALSO</strong> code it so we could also specify an optional port number like this:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb25-1"><a href="project-http-client-and-server.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python webserver.py 12399</span></code></pre></div>
+<p>The server is going to going to run forever, handling incoming requests. (Forever means “until you hit CTRL-C”.)</p>
+<p>And it’s only going to send back one thing no matter what the request is. Have it send back the simple server response, shown above.</p>
+<p>So it’s not a very full-featured webserver. But it’s the start of one!</p>
+<p>Here are some Python specifics:</p>
+<ul>
+<li><p>Get a socket just like you did for the client.</p></li>
+<li><p>After the call to <code>socket()</code>, you should add this crazy-looking line:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb26-1"><a href="project-http-client-and-server.html#cb26-1" aria-hidden="true" tabindex="-1"></a>s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, <span class="dv">1</span>)</span></code></pre></div>
+<p>where <code>s</code> is the socket descriptor you got from <code>socket()</code>. This will prevent an “Address already in use” error on the <code>bind()</code> in certain circumstances which would certainly be confusing at the time. Usually it happens after the server crashes. Later on we’ll figure out why that error occurs.</p>
+<p>If you do get that error and don’t feel like adding this line of code because you’re feeling contrary, you can also just wait a few minutes for the OS to give up on the broken connection..</p></li>
+<li><p>Bind the socket to a port with <code>s.bind()</code>. This takes one argument, a tuple containing the address and port you want to bind to. The address can be left blank to have it choose a local address. For example, “Any local address, port 28333” would be passed like so:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb27-1"><a href="project-http-client-and-server.html#cb27-1" aria-hidden="true" tabindex="-1"></a>(<span class="st">&#39;&#39;</span>, <span class="dv">28333</span>)</span></code></pre></div></li>
+<li><p>Set the socket up to listen with <code>s.listen()</code>.</p></li>
+<li><p>Accept new connections with <code>s.accept()</code>. Note that this returns a tuple. The first item in the tuple is a new socket representing the new connection. (The old socket is still listening and you will call <code>s.accept()</code> on it again after you’re done handling this request.)</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode py"><code class="sourceCode python"><span id="cb28-1"><a href="project-http-client-and-server.html#cb28-1" aria-hidden="true" tabindex="-1"></a>new_conn <span class="op">=</span> s.accept()</span>
+<span id="cb28-2"><a href="project-http-client-and-server.html#cb28-2" aria-hidden="true" tabindex="-1"></a>new_socket <span class="op">=</span> new_conn[<span class="dv">0</span>]  <span class="co"># This is what we&#39;ll recv/send on</span></span></code></pre></div></li>
+<li><p>Receive the request from the client. You should call <code>new_socket.recv()</code> in a loop similar to how you did it with the client.</p>
+<p>When you see a blank line (i.e. <code>"\r\n\r\n"</code>) in the request, you’ve read enough and can quit receiving.</p>
+<p>(We don’t handle payloads in the request for this project. The <em>right</em> thing to do would be to look for a <code>Content-Length</code> header and then receive the header plus that many bytes. But that’s a stretch goal for you.)</p>
+<p><strong>Beware</strong>: you can’t just loop until <code>recv()</code> returns an empty string this time! This would only happen if the client closed the connection, but the client isn’t closing the connection and it’s waiting for a response. So you have to call <code>recv()</code> repeatedly until you see that blank line delimiting the end of the header.</p></li>
+<li><p>Send the response. You should just send the “simple server reponse”, from above.</p></li>
+<li><p>Close the new socket with <code>new_socket.close()</code>.</p></li>
+<li><p>Loop back to <code>s.accept()</code> to get the next request.</p></li>
+</ul>
+<p>Now run the web server in one window and run the client in another, and see if it connects!</p>
+<p>Once it’s working with <code>webclient.py</code>, try it with a web browser!</p>
+<p>Run the server on an unused port (choose a big one at random):</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb29-1"><a href="project-http-client-and-server.html#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> python webserver.py 20123</span></code></pre></div>
+<p>Go to the URL <a href="http://localhost:20123/"><code>http://localhost:20123/</code></a> to view the page. (<code>localhost</code> is the name of “this computer”.)</p>
+<p>If it works, great!</p>
+<p>Try printing out the value returned by <code>.accept()</code>. What’s in there?</p>
+<p>Did you notice that if you use a web browser to connect to your server, the browser actually makes two connections? Dig into it and see if you can figure out why!</p>
+<h2 data-number="5.6" id="hints-and-help"><span class="header-section-number">5.6</span> Hints and Help</h2>
+<h3 data-number="5.6.1" id="address-already-in-use"><span class="header-section-number">5.6.1</span> Address Already In Use</h3>
+<p>If your server crashes and then you start getting an “Address already in use” error when you try to restart it, it means the system hasn’t finished cleaning up the port. (In this case “address” refers to the port.) Either switch to a different port for the server, or wait a minute or two for it to timeout and clean up.</p>
+<h3 data-number="5.6.2" id="receiving-partial-data"><span class="header-section-number">5.6.2</span> Receiving Partial Data</h3>
+<p>Even if you tell <code>recv()</code> that you want to get 4096 bytes, there’s no guarantee that you’ll get all of those. Maybe the server sent fewer. Maybe the data got split in transit and only part of it is here.</p>
+<p>This can get tricky when processing an HTTP request or response because you might call <code>recv()</code> and only get part of the data. Worse, the data might get split in the middle of the blank line delimiter at the end of the header!</p>
+<p>Don’t assume that a single <code>recv()</code> call gets you all the data. Always call it in a loop, appending the data to a buffer, until you have the data you want.</p>
+<p><code>recv()</code> will return an empty string (in Python) or <code>0</code> (in C) if you try to read from a connection that the other side has closed. This is how you can detect that closure.</p>
+<h3 data-number="5.6.3" id="http-301-http-302"><span class="header-section-number">5.6.3</span> HTTP 301, HTTP 302</h3>
+<p>If you run the client and get a server response with code <code>301</code> or <code>302</code>, probably along with a message that says <code>Moved Permanently</code> or <code>Moved Temporarily</code>, this is the server indicating to you that the particular resource you’re trying to get at the URL has moved to a different URL.</p>
+<p>If you look at the headers below that, you’ll find a <code>Location:</code> header field.</p>
+<p>For example, attempting to run <code>webclient.py google.com</code> results in:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode default"><code class="sourceCode default"><span id="cb30-1"><a href="project-http-client-and-server.html#cb30-1" aria-hidden="true" tabindex="-1"></a>HTTP/1.1 301 Moved Permanently</span>
+<span id="cb30-2"><a href="project-http-client-and-server.html#cb30-2" aria-hidden="true" tabindex="-1"></a>Location: http://www.google.com/</span>
+<span id="cb30-3"><a href="project-http-client-and-server.html#cb30-3" aria-hidden="true" tabindex="-1"></a>Content-Type: text/html; charset=UTF-8</span>
+<span id="cb30-4"><a href="project-http-client-and-server.html#cb30-4" aria-hidden="true" tabindex="-1"></a>Date: Wed, 28 Sep 2022 20:41:09 GMT</span>
+<span id="cb30-5"><a href="project-http-client-and-server.html#cb30-5" aria-hidden="true" tabindex="-1"></a>Expires: Fri, 28 Oct 2022 20:41:09 GMT</span>
+<span id="cb30-6"><a href="project-http-client-and-server.html#cb30-6" aria-hidden="true" tabindex="-1"></a>Cache-Control: public, max-age=2592000</span>
+<span id="cb30-7"><a href="project-http-client-and-server.html#cb30-7" aria-hidden="true" tabindex="-1"></a>Server: gws</span>
+<span id="cb30-8"><a href="project-http-client-and-server.html#cb30-8" aria-hidden="true" tabindex="-1"></a>Content-Length: 219</span>
+<span id="cb30-9"><a href="project-http-client-and-server.html#cb30-9" aria-hidden="true" tabindex="-1"></a>X-XSS-Protection: 0</span>
+<span id="cb30-10"><a href="project-http-client-and-server.html#cb30-10" aria-hidden="true" tabindex="-1"></a>X-Frame-Options: SAMEORIGIN</span>
+<span id="cb30-11"><a href="project-http-client-and-server.html#cb30-11" aria-hidden="true" tabindex="-1"></a>Connection: close</span>
+<span id="cb30-12"><a href="project-http-client-and-server.html#cb30-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="project-http-client-and-server.html#cb30-13" aria-hidden="true" tabindex="-1"></a>&lt;HTML&gt;&lt;HEAD&gt;&lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html;charset=utf-8&quot;&gt;</span>
+<span id="cb30-14"><a href="project-http-client-and-server.html#cb30-14" aria-hidden="true" tabindex="-1"></a>&lt;TITLE&gt;301 Moved&lt;/TITLE&gt;&lt;/HEAD&gt;&lt;BODY&gt;</span>
+<span id="cb30-15"><a href="project-http-client-and-server.html#cb30-15" aria-hidden="true" tabindex="-1"></a>&lt;H1&gt;301 Moved&lt;/H1&gt;</span>
+<span id="cb30-16"><a href="project-http-client-and-server.html#cb30-16" aria-hidden="true" tabindex="-1"></a>The document has moved</span>
+<span id="cb30-17"><a href="project-http-client-and-server.html#cb30-17" aria-hidden="true" tabindex="-1"></a>&lt;A HREF=&quot;http://www.google.com/&quot;&gt;here&lt;/A&gt;.</span>
+<span id="cb30-18"><a href="project-http-client-and-server.html#cb30-18" aria-hidden="true" tabindex="-1"></a>&lt;/BODY&gt;&lt;/HTML&gt;</span>
+<span id="cb30-19"><a href="project-http-client-and-server.html#cb30-19" aria-hidden="true" tabindex="-1"></a>Connection closed by foreign host.</span></code></pre></div>
+<p>Notice the first line is telling us the resource we’re looking for has moved.</p>
+<p>The second line with the <code>Location:</code> field tells us to where it has moved.</p>
+<p>When a web browser sees a <code>301</code> redirect, it automatically goes to the other URL so you don’t have to worry about it.</p>
+<p>Try it! Enter <code>google.com</code> in your browser and watch it update to <code>www.google.com</code> after a moment.</p>
+<h3 data-number="5.6.4" id="http-400-http-501-or-any-500s"><span class="header-section-number">5.6.4</span> HTTP 400, HTTP 501 (or any 500s)</h3>
+<p>If you run the client and get a response from a server that has the code <code>400</code> or any of the <code>500</code>s, odds are you have made a bad request. That is, the request data you sent was malformed in some way.</p>
+<p>Make sure every field of the header ends in <code>\r\n</code> and that the header is terminated by a blank line (i.e. <code>\r\n\r\n</code> are the last 4 bytes of the header).</p>
+<h3 data-number="5.6.5" id="http-404-not-found"><span class="header-section-number">5.6.5</span> HTTP 404 Not Found!</h3>
+<p>Make sure you have the <code>Host:</code> field set correctly to the same hostname as you passed in on the command line. If this is wrong, it’ll <code>404</code>.</p>
+<h2 data-number="5.7" id="extensions"><span class="header-section-number">5.7</span> Extensions</h2>
+<p>These are here if you have time to give yourself the additional challenge for greater understanding of the material. Push yourself!</p>
+<ul>
+<li><p>Modify the server to print out the IP address and port of the client that just connected to it. Hint: look at the value returned by <code>accept()</code> in Python.</p></li>
+<li><p>Modify the client to be able to send payloads. You’ll need to be able to set the <code>Content-Type</code> and <code>Content-Length</code> based on the payload.</p></li>
+<li><p>Modify the server to extract and print the “request method” from the request. This is most often <code>GET</code>, but it could also be <code>POST</code> or <code>DELETE</code> or many others.</p></li>
+<li><p>Modify the server to extract and print a payload sent by the client.</p></li>
+</ul>
+<!-- BG_NEW_CHAPTER -->
+<hr><div style="text-align:center"><span><a href="the-layered-network-model.html" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="the-internet-protocol-ip.html" rel="next">Next</a></span></div></body>
+</html>

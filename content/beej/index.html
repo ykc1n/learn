@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.11" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Beej's Guide to Network Concepts</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!-- Generated by the mklightdark script -->
+  <!-- Modify that script to change syntax highlighting -->
+    <style>
+     @media (prefers-color-scheme: light) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+          color: #aaaaaa;
+        }
+      pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+      code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+      code span.at { color: #7d9029; } /* Attribute */
+      code span.bn { color: #40a070; } /* BaseN */
+      code span.bu { color: #008000; } /* BuiltIn */
+      code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+      code span.ch { color: #4070a0; } /* Char */
+      code span.cn { color: #880000; } /* Constant */
+      code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+      code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+      code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+      code span.dt { color: #902000; } /* DataType */
+      code span.dv { color: #40a070; } /* DecVal */
+      code span.er { color: #ff0000; font-weight: bold; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #40a070; } /* Float */
+      code span.fu { color: #06287e; } /* Function */
+      code span.im { color: #008000; font-weight: bold; } /* Import */
+      code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+      code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+      code span.op { color: #666666; } /* Operator */
+      code span.ot { color: #007020; } /* Other */
+      code span.pp { color: #bc7a00; } /* Preprocessor */
+      code span.sc { color: #4070a0; } /* SpecialChar */
+      code span.ss { color: #bb6688; } /* SpecialString */
+      code span.st { color: #4070a0; } /* String */
+      code span.va { color: #19177c; } /* Variable */
+      code span.vs { color: #4070a0; } /* VerbatimString */
+      code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+      }
+    </style>
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #1a1a1a;
+        background-color: #fdfdfd;
+      }
+      body {
+        margin: 0 auto;
+        max-width: 36em;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 50px;
+        padding-bottom: 50px;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-rendering: optimizeLegibility;
+        font-kerning: normal;
+      }
+      @media (max-width: 600px) {
+        body {
+          font-size: 0.9em;
+          padding: 12px;
+        }
+        h1 {
+          font-size: 1.8em;
+        }
+      }
+      @media print {
+        html {
+          background-color: white;
+        }
+        body {
+          background-color: transparent;
+          color: black;
+          font-size: 12pt;
+        }
+        p, h2, h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h2, h3, h4 {
+          page-break-after: avoid;
+        }
+      }
+      p {
+        margin: 1em 0;
+      }
+      a {
+        color: #1a1a1a;
+      }
+      a:visited {
+        color: #1a1a1a;
+      }
+      img {
+        max-width: 100%;
+      }
+      svg {
+        height: auto;
+        max-width: 100%;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 1.4em;
+      }
+      h5, h6 {
+        font-size: 1em;
+        font-style: italic;
+      }
+      h6 {
+        font-weight: normal;
+      }
+      ol, ul {
+        padding-left: 1.7em;
+        margin-top: 1em;
+      }
+      li > ol, li > ul {
+        margin-top: 0;
+      }
+      blockquote {
+        margin: 1em 0 1em 1.7em;
+        padding-left: 1em;
+        border-left: 2px solid #e6e6e6;
+        color: #606060;
+      }
+      code {
+        font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+        font-size: 85%;
+        margin: 0;
+        hyphens: manual;
+      }
+      pre {
+        margin: 1em 0;
+        overflow: auto;
+      }
+      pre code {
+        padding: 0;
+        overflow: visible;
+        overflow-wrap: normal;
+      }
+      .sourceCode {
+       background-color: transparent;
+       overflow: visible;
+      }
+      hr {
+        background-color: #1a1a1a;
+        border: none;
+        height: 1px;
+        margin: 1em 0;
+      }
+      table {
+        margin: 1em 0;
+        border-collapse: collapse;
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+        font-variant-numeric: lining-nums tabular-nums;
+      }
+      table caption {
+        margin-bottom: 0.75em;
+      }
+      tbody {
+        margin-top: 0.5em;
+        border-top: 1px solid #1a1a1a;
+        border-bottom: 1px solid #1a1a1a;
+      }
+      th {
+        border-top: 1px solid #1a1a1a;
+        padding: 0.25em 0.5em 0.25em 0.5em;
+      }
+      td {
+        padding: 0.125em 0.5em 0.25em 0.5em;
+      }
+      header {
+        margin-bottom: 4em;
+        text-align: center;
+      }
+      #TOC li {
+        list-style: none;
+      }
+      #TOC ul {
+        padding-left: 1.3em;
+      }
+      #TOC > ul {
+        padding-left: 0;
+      }
+      #TOC a:not(:hover) {
+        text-decoration: none;
+      }
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      /* The extra [class] is a hack that increases specificity enough to
+         override a similar rule in reveal.js */
+      ul.task-list[class]{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        font-size: inherit;
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1.6em;
+        vertical-align: middle;
+      }
+      .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        { color: #cccccc; background-color: #303030; }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+      code span.al { color: #ffcfaf; } /* Alert */
+      code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+      code span.at { } /* Attribute */
+      code span.bn { color: #dca3a3; } /* BaseN */
+      code span.bu { } /* BuiltIn */
+      code span.cf { color: #f0dfaf; } /* ControlFlow */
+      code span.ch { color: #dca3a3; } /* Char */
+      code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+      code span.co { color: #7f9f7f; } /* Comment */
+      code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+      code span.do { color: #7f9f7f; } /* Documentation */
+      code span.dt { color: #dfdfbf; } /* DataType */
+      code span.dv { color: #dcdccc; } /* DecVal */
+      code span.er { color: #c3bf9f; } /* Error */
+      code span.ex { } /* Extension */
+      code span.fl { color: #c0bed1; } /* Float */
+      code span.fu { color: #efef8f; } /* Function */
+      code span.im { } /* Import */
+      code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+      code span.kw { color: #f0dfaf; } /* Keyword */
+      code span.op { color: #f0efd0; } /* Operator */
+      code span.ot { color: #efef8f; } /* Other */
+      code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+      code span.sc { color: #dca3a3; } /* SpecialChar */
+      code span.ss { color: #cc9393; } /* SpecialString */
+      code span.st { color: #cc9393; } /* String */
+      code span.va { } /* Variable */
+      code span.vs { color: #cc9393; } /* VerbatimString */
+      code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+      }
+    </style>
+  <!-- Hand-rolled dark mode overrides for Pandoc's default CSS -->
+  <!-- Credit: GitHub user ardabbour -->
+    <style>
+     @media (prefers-color-scheme: dark) {
+      html {
+        color: #ddd;
+        background-color: #151515;
+      }
+      a {
+        color: #abb2bf;
+      }
+      a:visited {
+        color: #abb2bf;
+      }
+      hr {
+        background-color: #abb2bf;
+      }
+      table {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      th {
+        border-top: 1px solid #abb2bf;
+      }
+      tbody {
+        border-top: 1px solid #abb2bf;
+        border-bottom: 1px solid #abb2bf;
+      }
+      blockquote {
+        border-left: 2px solid #282c34;
+        color: #5c6370;
+      }
+      figure > embed {
+          filter: invert(0.8); /* yuck -- this part is Beej's fault*/
+      }
+     }
+    </style>
+  <!-- BG custom styling -->
+  <style type="text/css">
+  /* Fix for line numbers not visible */
+  pre.numberSource code > span {
+      left: -1em;
+  }
+  pre.numberSource {
+      margin-left: initial;
+  }
+
+  /* Put some space after the section numbers */
+  span.toc-section-number::after {
+      content: "\a0\a0\a0";  /* non-breaking whitespace */
+  }
+
+  /* Hide underlines on code number links */
+  pre > code.sourceCode > span > a:first-child::before {
+      text-decoration: none;
+  }
+
+  /* Color the source blocks */
+  div.sourceCode {
+      /* background-color: #f0f0f0; */
+  }
+
+  /* Fix iOS big text rendering issue */
+  pre > code.sourceCode > span {
+      display: initial;
+  }
+
+
+  /* Color the inline code */
+  code:not(.sourceCode) {
+      /* background: #f0f0f0; */
+      padding-left: 0.2em;
+      padding-right: 0.2em;
+      border-radius: 0.2em;
+  }
+
+  pre.sourceCode {
+      border: 1px solid #ccc;
+      padding: 0.5em;
+      border-radius: 0.2em;
+  }
+
+  /* Keep code tags from wrapping in tables */
+  tbody code {
+      white-space: nowrap;
+  }
+
+  /* Prevent hyphenation and hyphen breaks in code*/
+  code {
+      word-break: keep-all;
+  }
+
+  td {
+      vertical-align: top;
+  }
+
+  body {
+      font-size: 12pt;
+      max-width: 43em;
+      font-family: sans-serif;
+  }
+
+  html {
+      /* background: #f9f9f9; */
+  }
+
+  figure > embed {
+      max-width: 100%;
+  }
+
+  figure {
+      text-align: center;
+      margin-top: 2em;
+      margin-bottom: 2em;
+  }
+
+  figcaption {
+      font-size: 0.9em;
+      font-style: italic;
+      margin-top: 0.6em;
+  }
+
+  body {
+      counter-reset: figure-counter-major;
+      counter-reset: figure-counter-minor;
+  }
+
+  figure {
+      counter-increment: figure-counter-minor;
+  }
+
+  figcaption::before {
+      content: "Figure " counter(figure-counter-major) "." counter(figure-counter-minor) ": ";
+  }
+
+  blockquote {
+      border-left: 2px solid #bbb;
+      /*color: #444;*/
+  }
+
+  /* Contents */
+
+  nav[role="doc-toc"] > ul > li {
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+
+  nav[role="doc-toc"] > ul > li:first {
+    font-weight: bold;
+    margin-top: initial;
+  }
+
+  nav[role="doc-toc"] > ul > li > ul {
+    font-weight: normal;
+    margin-top: 0.3em;
+  }
+
+  /*
+  In multipage, we need to reset the figure counter to the chapter
+  number. Luckily, this is in the <h1 data-number> attribute. Unluckily,
+  there is no way to get this in a general way.
+
+  This doesn't work:
+
+    h1[data-number] {
+      counter-set: figure-counter-major attr(data-number);
+    }
+
+  Nor this:
+
+    h1[data-number] {
+      --figure-counter-major-value: attr(data-number);
+      counter-set: figure-counter-major var(--figure-counter-major-value);
+    }
+
+  So, dumbly, we have a bunch of rules for all these sections, up to the
+  maximum possible section.
+
+  Here's a program to generate them:
+
+    for (let i = 1; i < 100; i++)
+        console.log(`h1[data-number="${i}"]{counter-set:figure-counter-major ${i};counter-reset:figure-counter-minor;}`);
+
+  Note to self: never write a book with more than 99 frickin' chapters.
+  */
+
+  h1[data-number="1"]{counter-set:figure-counter-major 1;counter-reset:figure-counter-minor;}
+  h1[data-number="2"]{counter-set:figure-counter-major 2;counter-reset:figure-counter-minor;}
+  h1[data-number="3"]{counter-set:figure-counter-major 3;counter-reset:figure-counter-minor;}
+  h1[data-number="4"]{counter-set:figure-counter-major 4;counter-reset:figure-counter-minor;}
+  h1[data-number="5"]{counter-set:figure-counter-major 5;counter-reset:figure-counter-minor;}
+  h1[data-number="6"]{counter-set:figure-counter-major 6;counter-reset:figure-counter-minor;}
+  h1[data-number="7"]{counter-set:figure-counter-major 7;counter-reset:figure-counter-minor;}
+  h1[data-number="8"]{counter-set:figure-counter-major 8;counter-reset:figure-counter-minor;}
+  h1[data-number="9"]{counter-set:figure-counter-major 9;counter-reset:figure-counter-minor;}
+  h1[data-number="10"]{counter-set:figure-counter-major 10;counter-reset:figure-counter-minor;}
+  h1[data-number="11"]{counter-set:figure-counter-major 11;counter-reset:figure-counter-minor;}
+  h1[data-number="12"]{counter-set:figure-counter-major 12;counter-reset:figure-counter-minor;}
+  h1[data-number="13"]{counter-set:figure-counter-major 13;counter-reset:figure-counter-minor;}
+  h1[data-number="14"]{counter-set:figure-counter-major 14;counter-reset:figure-counter-minor;}
+  h1[data-number="15"]{counter-set:figure-counter-major 15;counter-reset:figure-counter-minor;}
+  h1[data-number="16"]{counter-set:figure-counter-major 16;counter-reset:figure-counter-minor;}
+  h1[data-number="17"]{counter-set:figure-counter-major 17;counter-reset:figure-counter-minor;}
+  h1[data-number="18"]{counter-set:figure-counter-major 18;counter-reset:figure-counter-minor;}
+  h1[data-number="19"]{counter-set:figure-counter-major 19;counter-reset:figure-counter-minor;}
+  h1[data-number="20"]{counter-set:figure-counter-major 20;counter-reset:figure-counter-minor;}
+  h1[data-number="21"]{counter-set:figure-counter-major 21;counter-reset:figure-counter-minor;}
+  h1[data-number="22"]{counter-set:figure-counter-major 22;counter-reset:figure-counter-minor;}
+  h1[data-number="23"]{counter-set:figure-counter-major 23;counter-reset:figure-counter-minor;}
+  h1[data-number="24"]{counter-set:figure-counter-major 24;counter-reset:figure-counter-minor;}
+  h1[data-number="25"]{counter-set:figure-counter-major 25;counter-reset:figure-counter-minor;}
+  h1[data-number="26"]{counter-set:figure-counter-major 26;counter-reset:figure-counter-minor;}
+  h1[data-number="27"]{counter-set:figure-counter-major 27;counter-reset:figure-counter-minor;}
+  h1[data-number="28"]{counter-set:figure-counter-major 28;counter-reset:figure-counter-minor;}
+  h1[data-number="29"]{counter-set:figure-counter-major 29;counter-reset:figure-counter-minor;}
+  h1[data-number="30"]{counter-set:figure-counter-major 30;counter-reset:figure-counter-minor;}
+  h1[data-number="31"]{counter-set:figure-counter-major 31;counter-reset:figure-counter-minor;}
+  h1[data-number="32"]{counter-set:figure-counter-major 32;counter-reset:figure-counter-minor;}
+  h1[data-number="33"]{counter-set:figure-counter-major 33;counter-reset:figure-counter-minor;}
+  h1[data-number="34"]{counter-set:figure-counter-major 34;counter-reset:figure-counter-minor;}
+  h1[data-number="35"]{counter-set:figure-counter-major 35;counter-reset:figure-counter-minor;}
+  h1[data-number="36"]{counter-set:figure-counter-major 36;counter-reset:figure-counter-minor;}
+  h1[data-number="37"]{counter-set:figure-counter-major 37;counter-reset:figure-counter-minor;}
+  h1[data-number="38"]{counter-set:figure-counter-major 38;counter-reset:figure-counter-minor;}
+  h1[data-number="39"]{counter-set:figure-counter-major 39;counter-reset:figure-counter-minor;}
+  h1[data-number="40"]{counter-set:figure-counter-major 40;counter-reset:figure-counter-minor;}
+  h1[data-number="41"]{counter-set:figure-counter-major 41;counter-reset:figure-counter-minor;}
+  h1[data-number="42"]{counter-set:figure-counter-major 42;counter-reset:figure-counter-minor;}
+  h1[data-number="43"]{counter-set:figure-counter-major 43;counter-reset:figure-counter-minor;}
+  h1[data-number="44"]{counter-set:figure-counter-major 44;counter-reset:figure-counter-minor;}
+  h1[data-number="45"]{counter-set:figure-counter-major 45;counter-reset:figure-counter-minor;}
+  h1[data-number="46"]{counter-set:figure-counter-major 46;counter-reset:figure-counter-minor;}
+  h1[data-number="47"]{counter-set:figure-counter-major 47;counter-reset:figure-counter-minor;}
+  h1[data-number="48"]{counter-set:figure-counter-major 48;counter-reset:figure-counter-minor;}
+  h1[data-number="49"]{counter-set:figure-counter-major 49;counter-reset:figure-counter-minor;}
+  h1[data-number="50"]{counter-set:figure-counter-major 50;counter-reset:figure-counter-minor;}
+  h1[data-number="51"]{counter-set:figure-counter-major 51;counter-reset:figure-counter-minor;}
+  h1[data-number="52"]{counter-set:figure-counter-major 52;counter-reset:figure-counter-minor;}
+  h1[data-number="53"]{counter-set:figure-counter-major 53;counter-reset:figure-counter-minor;}
+  h1[data-number="54"]{counter-set:figure-counter-major 54;counter-reset:figure-counter-minor;}
+  h1[data-number="55"]{counter-set:figure-counter-major 55;counter-reset:figure-counter-minor;}
+  h1[data-number="56"]{counter-set:figure-counter-major 56;counter-reset:figure-counter-minor;}
+  h1[data-number="57"]{counter-set:figure-counter-major 57;counter-reset:figure-counter-minor;}
+  h1[data-number="58"]{counter-set:figure-counter-major 58;counter-reset:figure-counter-minor;}
+  h1[data-number="59"]{counter-set:figure-counter-major 59;counter-reset:figure-counter-minor;}
+  h1[data-number="60"]{counter-set:figure-counter-major 60;counter-reset:figure-counter-minor;}
+  h1[data-number="61"]{counter-set:figure-counter-major 61;counter-reset:figure-counter-minor;}
+  h1[data-number="62"]{counter-set:figure-counter-major 62;counter-reset:figure-counter-minor;}
+  h1[data-number="63"]{counter-set:figure-counter-major 63;counter-reset:figure-counter-minor;}
+  h1[data-number="64"]{counter-set:figure-counter-major 64;counter-reset:figure-counter-minor;}
+  h1[data-number="65"]{counter-set:figure-counter-major 65;counter-reset:figure-counter-minor;}
+  h1[data-number="66"]{counter-set:figure-counter-major 66;counter-reset:figure-counter-minor;}
+  h1[data-number="67"]{counter-set:figure-counter-major 67;counter-reset:figure-counter-minor;}
+  h1[data-number="68"]{counter-set:figure-counter-major 68;counter-reset:figure-counter-minor;}
+  h1[data-number="69"]{counter-set:figure-counter-major 69;counter-reset:figure-counter-minor;}
+  h1[data-number="70"]{counter-set:figure-counter-major 70;counter-reset:figure-counter-minor;}
+  h1[data-number="71"]{counter-set:figure-counter-major 71;counter-reset:figure-counter-minor;}
+  h1[data-number="72"]{counter-set:figure-counter-major 72;counter-reset:figure-counter-minor;}
+  h1[data-number="73"]{counter-set:figure-counter-major 73;counter-reset:figure-counter-minor;}
+  h1[data-number="74"]{counter-set:figure-counter-major 74;counter-reset:figure-counter-minor;}
+  h1[data-number="75"]{counter-set:figure-counter-major 75;counter-reset:figure-counter-minor;}
+  h1[data-number="76"]{counter-set:figure-counter-major 76;counter-reset:figure-counter-minor;}
+  h1[data-number="77"]{counter-set:figure-counter-major 77;counter-reset:figure-counter-minor;}
+  h1[data-number="78"]{counter-set:figure-counter-major 78;counter-reset:figure-counter-minor;}
+  h1[data-number="79"]{counter-set:figure-counter-major 79;counter-reset:figure-counter-minor;}
+  h1[data-number="80"]{counter-set:figure-counter-major 80;counter-reset:figure-counter-minor;}
+  h1[data-number="81"]{counter-set:figure-counter-major 81;counter-reset:figure-counter-minor;}
+  h1[data-number="82"]{counter-set:figure-counter-major 82;counter-reset:figure-counter-minor;}
+  h1[data-number="83"]{counter-set:figure-counter-major 83;counter-reset:figure-counter-minor;}
+  h1[data-number="84"]{counter-set:figure-counter-major 84;counter-reset:figure-counter-minor;}
+  h1[data-number="85"]{counter-set:figure-counter-major 85;counter-reset:figure-counter-minor;}
+  h1[data-number="86"]{counter-set:figure-counter-major 86;counter-reset:figure-counter-minor;}
+  h1[data-number="87"]{counter-set:figure-counter-major 87;counter-reset:figure-counter-minor;}
+  h1[data-number="88"]{counter-set:figure-counter-major 88;counter-reset:figure-counter-minor;}
+  h1[data-number="89"]{counter-set:figure-counter-major 89;counter-reset:figure-counter-minor;}
+  h1[data-number="90"]{counter-set:figure-counter-major 90;counter-reset:figure-counter-minor;}
+  h1[data-number="91"]{counter-set:figure-counter-major 91;counter-reset:figure-counter-minor;}
+  h1[data-number="92"]{counter-set:figure-counter-major 92;counter-reset:figure-counter-minor;}
+  h1[data-number="93"]{counter-set:figure-counter-major 93;counter-reset:figure-counter-minor;}
+  h1[data-number="94"]{counter-set:figure-counter-major 94;counter-reset:figure-counter-minor;}
+  h1[data-number="95"]{counter-set:figure-counter-major 95;counter-reset:figure-counter-minor;}
+  h1[data-number="96"]{counter-set:figure-counter-major 96;counter-reset:figure-counter-minor;}
+  h1[data-number="97"]{counter-set:figure-counter-major 97;counter-reset:figure-counter-minor;}
+  h1[data-number="98"]{counter-set:figure-counter-major 98;counter-reset:figure-counter-minor;}
+  h1[data-number="99"]{counter-set:figure-counter-major 99;counter-reset:figure-counter-minor;}
+
+
+  </style>
+</head>
+<body>
+<div style="text-align:center"><span style="visibility: hidden"><a href="" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="foreword.html" rel="next">Next</a></span></div><hr>
+<header id="title-block-header">
+<h1 class="title">Beej's Guide to Network Concepts</h1>
+<p class="author">Brian “Beej Jorgensen” Hall</p>
+<p class="date">v1.11.1, Copyright © September 28, 2025</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="foreword.html#foreword" id="toc-foreword"><span class="toc-section-number">1</span> Foreword</a>
+<ul>
+<li><a href="foreword.html#audience" id="toc-audience"><span class="toc-section-number">1.1</span> Audience</a></li>
+<li><a href="foreword.html#official-homepage" id="toc-official-homepage"><span class="toc-section-number">1.2</span> Official Homepage</a></li>
+<li><a href="foreword.html#email-policy" id="toc-email-policy"><span class="toc-section-number">1.3</span> Email Policy</a></li>
+<li><a href="foreword.html#mirroring" id="toc-mirroring"><span class="toc-section-number">1.4</span> Mirroring</a></li>
+<li><a href="foreword.html#note-for-translators" id="toc-note-for-translators"><span class="toc-section-number">1.5</span> Note for Translators</a></li>
+<li><a href="foreword.html#copyright-and-distribution" id="toc-copyright-and-distribution"><span class="toc-section-number">1.6</span> Copyright and Distribution</a></li>
+<li><a href="foreword.html#dedication" id="toc-dedication"><span class="toc-section-number">1.7</span> Dedication</a></li>
+</ul></li>
+<li><a href="networking-overview.html#networking-overview" id="toc-networking-overview"><span class="toc-section-number">2</span> Networking Overview</a>
+<ul>
+<li><a href="networking-overview.html#circuit-switched" id="toc-circuit-switched"><span class="toc-section-number">2.1</span> Circuit Switched</a></li>
+<li><a href="networking-overview.html#packet-switched" id="toc-packet-switched"><span class="toc-section-number">2.2</span> Packet Switched</a></li>
+<li><a href="networking-overview.html#clientserver-architecture" id="toc-clientserver-architecture"><span class="toc-section-number">2.3</span> Client/Server Architecture</a></li>
+<li><a href="networking-overview.html#the-os-network-programming-and-sockets" id="toc-the-os-network-programming-and-sockets"><span class="toc-section-number">2.4</span> The OS, Network Programming, and Sockets</a></li>
+<li><a href="networking-overview.html#protocols" id="toc-protocols"><span class="toc-section-number">2.5</span> Protocols</a></li>
+<li><a href="networking-overview.html#network-layers-and-abstraction" id="toc-network-layers-and-abstraction"><span class="toc-section-number">2.6</span> Network Layers and Abstraction</a></li>
+<li><a href="networking-overview.html#wired-versus-wireless" id="toc-wired-versus-wireless"><span class="toc-section-number">2.7</span> Wired versus Wireless</a></li>
+<li><a href="networking-overview.html#reflect" id="toc-reflect"><span class="toc-section-number">2.8</span> Reflect</a></li>
+</ul></li>
+<li><a href="introducing-the-sockets-api.html#introducing-the-sockets-api" id="toc-introducing-the-sockets-api"><span class="toc-section-number">3</span> Introducing The Sockets API</a>
+<ul>
+<li><a href="introducing-the-sockets-api.html#client-connection-process" id="toc-client-connection-process"><span class="toc-section-number">3.1</span> Client Connection Process</a></li>
+<li><a href="introducing-the-sockets-api.html#server-listening-process" id="toc-server-listening-process"><span class="toc-section-number">3.2</span> Server Listening Process</a></li>
+<li><a href="introducing-the-sockets-api.html#client-api-code" id="toc-client-api-code"><span class="toc-section-number">3.3</span> Client API Code</a></li>
+<li><a href="introducing-the-sockets-api.html#server-api-code" id="toc-server-api-code"><span class="toc-section-number">3.4</span> Server API Code</a></li>
+<li><a href="introducing-the-sockets-api.html#reflect-1" id="toc-reflect-1"><span class="toc-section-number">3.5</span> Reflect</a></li>
+<li><a href="introducing-the-sockets-api.html#resources" id="toc-resources"><span class="toc-section-number">3.6</span> Resources</a></li>
+</ul></li>
+<li><a href="the-layered-network-model.html#the-layered-network-model" id="toc-the-layered-network-model"><span class="toc-section-number">4</span> The Layered Network Model</a>
+<ul>
+<li><a href="the-layered-network-model.html#the-layered-network-model-1" id="toc-the-layered-network-model-1"><span class="toc-section-number">4.1</span> The Layered Network Model</a></li>
+<li><a href="the-layered-network-model.html#an-example-of-layering-of-protocols-on-data" id="toc-an-example-of-layering-of-protocols-on-data"><span class="toc-section-number">4.2</span> An Example of Layering of Protocols on Data</a></li>
+<li><a href="the-layered-network-model.html#the-internet-layer-model" id="toc-the-internet-layer-model"><span class="toc-section-number">4.3</span> The Internet Layer Model</a></li>
+<li><a href="the-layered-network-model.html#the-iso-osi-network-layer-model" id="toc-the-iso-osi-network-layer-model"><span class="toc-section-number">4.4</span> The ISO OSI Network Layer Model</a></li>
+<li><a href="the-layered-network-model.html#reflect-2" id="toc-reflect-2"><span class="toc-section-number">4.5</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-http-client-and-server.html#project-http-client-and-server" id="toc-project-http-client-and-server"><span class="toc-section-number">5</span> Project: HTTP Client and Server</a>
+<ul>
+<li><a href="project-http-client-and-server.html#restrictions" id="toc-restrictions"><span class="toc-section-number">5.1</span> Restrictions</a></li>
+<li><a href="project-http-client-and-server.html#python-character-encoding" id="toc-python-character-encoding"><span class="toc-section-number">5.2</span> Python Character Encoding</a></li>
+<li><a href="project-http-client-and-server.html#http-summary" id="toc-http-summary"><span class="toc-section-number">5.3</span> HTTP Summary</a></li>
+<li><a href="project-http-client-and-server.html#the-client" id="toc-the-client"><span class="toc-section-number">5.4</span> The Client</a></li>
+<li><a href="project-http-client-and-server.html#the-server" id="toc-the-server"><span class="toc-section-number">5.5</span> The Server</a></li>
+<li><a href="project-http-client-and-server.html#hints-and-help" id="toc-hints-and-help"><span class="toc-section-number">5.6</span> Hints and Help</a>
+<ul>
+<li><a href="project-http-client-and-server.html#address-already-in-use" id="toc-address-already-in-use"><span class="toc-section-number">5.6.1</span> Address Already In Use</a></li>
+<li><a href="project-http-client-and-server.html#receiving-partial-data" id="toc-receiving-partial-data"><span class="toc-section-number">5.6.2</span> Receiving Partial Data</a></li>
+<li><a href="project-http-client-and-server.html#http-301-http-302" id="toc-http-301-http-302"><span class="toc-section-number">5.6.3</span> HTTP 301, HTTP 302</a></li>
+<li><a href="project-http-client-and-server.html#http-400-http-501-or-any-500s" id="toc-http-400-http-501-or-any-500s"><span class="toc-section-number">5.6.4</span> HTTP 400, HTTP 501 (or any 500s)</a></li>
+<li><a href="project-http-client-and-server.html#http-404-not-found" id="toc-http-404-not-found"><span class="toc-section-number">5.6.5</span> HTTP 404 Not Found!</a></li>
+</ul></li>
+<li><a href="project-http-client-and-server.html#extensions" id="toc-extensions"><span class="toc-section-number">5.7</span> Extensions</a></li>
+</ul></li>
+<li><a href="the-internet-protocol-ip.html#the-internet-protocol-ip" id="toc-the-internet-protocol-ip"><span class="toc-section-number">6</span> The Internet Protocol (IP)</a>
+<ul>
+<li><a href="the-internet-protocol-ip.html#terminology" id="toc-terminology"><span class="toc-section-number">6.1</span> Terminology</a></li>
+<li><a href="the-internet-protocol-ip.html#two-common-versions" id="toc-two-common-versions"><span class="toc-section-number">6.2</span> Two Common Versions</a></li>
+<li><a href="the-internet-protocol-ip.html#subnets" id="toc-subnets"><span class="toc-section-number">6.3</span> Subnets</a></li>
+<li><a href="the-internet-protocol-ip.html#additional-ip-layer-protocols" id="toc-additional-ip-layer-protocols"><span class="toc-section-number">6.4</span> Additional IP-layer Protocols</a></li>
+<li><a href="the-internet-protocol-ip.html#private-networks" id="toc-private-networks"><span class="toc-section-number">6.5</span> Private Networks</a></li>
+<li><a href="the-internet-protocol-ip.html#static-versus-dynamic-ip-addresses-and-dhcp" id="toc-static-versus-dynamic-ip-addresses-and-dhcp"><span class="toc-section-number">6.6</span> Static versus Dynamic IP Addresses, and DHCP</a></li>
+<li><a href="the-internet-protocol-ip.html#reflect-3" id="toc-reflect-3"><span class="toc-section-number">6.7</span> Reflect</a></li>
+</ul></li>
+<li><a href="the-internet-protocol-version-4.html#the-internet-protocol-version-4" id="toc-the-internet-protocol-version-4"><span class="toc-section-number">7</span> The Internet Protocol version 4</a>
+<ul>
+<li><a href="the-internet-protocol-version-4.html#ip-addresses" id="toc-ip-addresses"><span class="toc-section-number">7.1</span> IP Addresses</a></li>
+<li><a href="the-internet-protocol-version-4.html#subnets-1" id="toc-subnets-1"><span class="toc-section-number">7.2</span> Subnets</a></li>
+<li><a href="the-internet-protocol-version-4.html#subnet-masks" id="toc-subnet-masks"><span class="toc-section-number">7.3</span> Subnet Masks</a></li>
+<li><a href="the-internet-protocol-version-4.html#historic-subnets" id="toc-historic-subnets"><span class="toc-section-number">7.4</span> Historic Subnets</a></li>
+<li><a href="the-internet-protocol-version-4.html#special-addresses" id="toc-special-addresses"><span class="toc-section-number">7.5</span> Special Addresses</a></li>
+<li><a href="the-internet-protocol-version-4.html#special-subnets" id="toc-special-subnets"><span class="toc-section-number">7.6</span> Special Subnets</a></li>
+<li><a href="the-internet-protocol-version-4.html#reflect-4" id="toc-reflect-4"><span class="toc-section-number">7.7</span> Reflect</a></li>
+</ul></li>
+<li><a href="the-internet-protocol-version-6.html#the-internet-protocol-version-6" id="toc-the-internet-protocol-version-6"><span class="toc-section-number">8</span> The Internet Protocol version 6</a>
+<ul>
+<li><a href="the-internet-protocol-version-6.html#representation" id="toc-representation"><span class="toc-section-number">8.1</span> Representation</a></li>
+<li><a href="the-internet-protocol-version-6.html#link-local-addresses" id="toc-link-local-addresses"><span class="toc-section-number">8.2</span> Link-Local Addresses</a></li>
+<li><a href="the-internet-protocol-version-6.html#special-ipv6-addresses-and-subnets" id="toc-special-ipv6-addresses-and-subnets"><span class="toc-section-number">8.3</span> Special IPv6 Addresses and Subnets</a></li>
+<li><a href="the-internet-protocol-version-6.html#ipv6-and-dns" id="toc-ipv6-and-dns"><span class="toc-section-number">8.4</span> IPv6 and DNS</a></li>
+<li><a href="the-internet-protocol-version-6.html#ipv6-and-urls" id="toc-ipv6-and-urls"><span class="toc-section-number">8.5</span> IPv6 and URLs</a></li>
+<li><a href="the-internet-protocol-version-6.html#reflect-5" id="toc-reflect-5"><span class="toc-section-number">8.6</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-a-better-web-server.html#project-a-better-web-server" id="toc-project-a-better-web-server"><span class="toc-section-number">9</span> Project: A Better Web Server</a>
+<ul>
+<li><a href="project-a-better-web-server.html#restrictions-1" id="toc-restrictions-1"><span class="toc-section-number">9.1</span> Restrictions</a></li>
+<li><a href="project-a-better-web-server.html#running-the-server" id="toc-running-the-server"><span class="toc-section-number">9.2</span> Running the Server</a></li>
+<li><a href="project-a-better-web-server.html#the-process" id="toc-the-process"><span class="toc-section-number">9.3</span> The Process</a></li>
+<li><a href="project-a-better-web-server.html#parsing-the-request-header" id="toc-parsing-the-request-header"><span class="toc-section-number">9.4</span> Parsing the Request Header</a></li>
+<li><a href="project-a-better-web-server.html#stripping-the-path-down-to-the-filename" id="toc-stripping-the-path-down-to-the-filename"><span class="toc-section-number">9.5</span> Stripping the Path down to the Filename</a></li>
+<li><a href="project-a-better-web-server.html#mime-and-getting-the-content-type" id="toc-mime-and-getting-the-content-type"><span class="toc-section-number">9.6</span> MIME and Getting the <code>Content-Type</code></a></li>
+<li><a href="project-a-better-web-server.html#reading-the-file-content-length-and-handling-not-found" id="toc-reading-the-file-content-length-and-handling-not-found"><span class="toc-section-number">9.7</span> Reading the File, <code>Content-Length</code>, and Handling Not Found</a></li>
+<li><a href="project-a-better-web-server.html#extensions-1" id="toc-extensions-1"><span class="toc-section-number">9.8</span> Extensions</a></li>
+<li><a href="project-a-better-web-server.html#example-files" id="toc-example-files"><span class="toc-section-number">9.9</span> Example Files</a>
+<ul>
+<li><a href="project-a-better-web-server.html#file1.txt" id="toc-file1.txt"><span class="toc-section-number">9.9.1</span> <code>file1.txt</code></a></li>
+<li><a href="project-a-better-web-server.html#file2.html" id="toc-file2.html"><span class="toc-section-number">9.9.2</span> <code>file2.html</code></a></li>
+</ul></li>
+</ul></li>
+<li><a href="endianness-and-integers.html#endianness-and-integers" id="toc-endianness-and-integers"><span class="toc-section-number">10</span> Endianness and Integers</a>
+<ul>
+<li><a href="endianness-and-integers.html#integer-representations" id="toc-integer-representations"><span class="toc-section-number">10.1</span> Integer Representations</a>
+<ul>
+<li><a href="endianness-and-integers.html#decimal-byte-representation" id="toc-decimal-byte-representation"><span class="toc-section-number">10.1.1</span> Decimal Byte Representation</a></li>
+<li><a href="endianness-and-integers.html#binary-byte-representations" id="toc-binary-byte-representations"><span class="toc-section-number">10.1.2</span> Binary Byte Representations</a></li>
+<li><a href="endianness-and-integers.html#hexadecimal-byte-representations" id="toc-hexadecimal-byte-representations"><span class="toc-section-number">10.1.3</span> Hexadecimal Byte Representations</a></li>
+</ul></li>
+<li><a href="endianness-and-integers.html#endianness" id="toc-endianness"><span class="toc-section-number">10.2</span> Endianness</a></li>
+<li><a href="endianness-and-integers.html#python-and-endianness" id="toc-python-and-endianness"><span class="toc-section-number">10.3</span> Python and Endianness</a>
+<ul>
+<li><a href="endianness-and-integers.html#converting-a-number-to-bytes" id="toc-converting-a-number-to-bytes"><span class="toc-section-number">10.3.1</span> Converting a Number to Bytes</a></li>
+<li><a href="endianness-and-integers.html#convert-bytes-back-to-a-number" id="toc-convert-bytes-back-to-a-number"><span class="toc-section-number">10.3.2</span> Convert Bytes Back to a Number</a></li>
+</ul></li>
+<li><a href="endianness-and-integers.html#reflect-6" id="toc-reflect-6"><span class="toc-section-number">10.4</span> Reflect</a></li>
+</ul></li>
+<li><a href="parsing-packets.html#parsing-packets" id="toc-parsing-packets"><span class="toc-section-number">11</span> Parsing Packets</a>
+<ul>
+<li><a href="parsing-packets.html#you-know-what-would-make-this-easy" id="toc-you-know-what-would-make-this-easy"><span class="toc-section-number">11.1</span> You Know What Would Make This Easy?</a></li>
+<li><a href="parsing-packets.html#processing-a-stream-into-packets" id="toc-processing-a-stream-into-packets"><span class="toc-section-number">11.2</span> Processing a Stream into Packets</a></li>
+<li><a href="parsing-packets.html#the-sentences-example-again" id="toc-the-sentences-example-again"><span class="toc-section-number">11.3</span> The Sentences Example Again</a>
+<ul>
+<li><a href="parsing-packets.html#what-if-you-receive-multiple-sentences-at-once" id="toc-what-if-you-receive-multiple-sentences-at-once"><span class="toc-section-number">11.3.1</span> What If You Receive Multiple Sentences at Once?</a></li>
+</ul></li>
+<li><a href="parsing-packets.html#the-grand-scheme" id="toc-the-grand-scheme"><span class="toc-section-number">11.4</span> The Grand Scheme</a></li>
+<li><a href="parsing-packets.html#reflect-7" id="toc-reflect-7"><span class="toc-section-number">11.5</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-atomic-time.html#project-atomic-time" id="toc-project-atomic-time"><span class="toc-section-number">12</span> Project: Atomic Time</a>
+<ul>
+<li><a href="project-atomic-time.html#note-on-legality" id="toc-note-on-legality"><span class="toc-section-number">12.1</span> Note On Legality</a></li>
+<li><a href="project-atomic-time.html#note-on-allowable-use" id="toc-note-on-allowable-use"><span class="toc-section-number">12.2</span> Note On Allowable Use</a></li>
+<li><a href="project-atomic-time.html#epoch" id="toc-epoch"><span class="toc-section-number">12.3</span> Epoch</a></li>
+<li><a href="project-atomic-time.html#a-dire-warning-about-zeros" id="toc-a-dire-warning-about-zeros"><span class="toc-section-number">12.4</span> A Dire Warning about Zeros</a></li>
+<li><a href="project-atomic-time.html#the-gameplan" id="toc-the-gameplan"><span class="toc-section-number">12.5</span> The Gameplan</a>
+<ul>
+<li><a href="project-atomic-time.html#connect-to-the-server" id="toc-connect-to-the-server"><span class="toc-section-number">12.5.1</span> 1. Connect to the Server</a></li>
+<li><a href="project-atomic-time.html#receive-the-data" id="toc-receive-the-data"><span class="toc-section-number">12.5.2</span> 2. Receive the Data</a></li>
+<li><a href="project-atomic-time.html#decode-the-data" id="toc-decode-the-data"><span class="toc-section-number">12.5.3</span> 3. Decode the Data</a></li>
+<li><a href="project-atomic-time.html#print-out-nists-time" id="toc-print-out-nists-time"><span class="toc-section-number">12.5.4</span> 4. Print Out NIST’s Time</a></li>
+<li><a href="project-atomic-time.html#print-out-the-system-time" id="toc-print-out-the-system-time"><span class="toc-section-number">12.5.5</span> 5. Print Out the System Time</a></li>
+</ul></li>
+</ul></li>
+<li><a href="project-the-word-server.html#project-the-word-server" id="toc-project-the-word-server"><span class="toc-section-number">13</span> Project: The Word Server</a>
+<ul>
+<li><a href="project-the-word-server.html#overview" id="toc-overview"><span class="toc-section-number">13.1</span> Overview</a></li>
+<li><a href="project-the-word-server.html#what-is-a-word-packet" id="toc-what-is-a-word-packet"><span class="toc-section-number">13.2</span> What is a “Word Packet”?</a></li>
+<li><a href="project-the-word-server.html#implementation-get_next_word_packet" id="toc-implementation-get_next_word_packet"><span class="toc-section-number">13.3</span> Implementation: <code>get_next_word_packet()</code></a></li>
+<li><a href="project-the-word-server.html#implementation-extract_word" id="toc-implementation-extract_word"><span class="toc-section-number">13.4</span> Implementation: <code>extract_word()</code></a></li>
+</ul></li>
+<li><a href="transmission-control-protocol-tcp.html#transmission-control-protocol-tcp" id="toc-transmission-control-protocol-tcp"><span class="toc-section-number">14</span> Transmission Control Protocol (TCP)</a>
+<ul>
+<li><a href="transmission-control-protocol-tcp.html#goals-of-tcp" id="toc-goals-of-tcp"><span class="toc-section-number">14.1</span> Goals of TCP</a></li>
+<li><a href="transmission-control-protocol-tcp.html#location-in-the-network-stack" id="toc-location-in-the-network-stack"><span class="toc-section-number">14.2</span> Location in the Network Stack</a></li>
+<li><a href="transmission-control-protocol-tcp.html#tcp-ports" id="toc-tcp-ports"><span class="toc-section-number">14.3</span> TCP Ports</a></li>
+<li><a href="transmission-control-protocol-tcp.html#tcp-overview" id="toc-tcp-overview"><span class="toc-section-number">14.4</span> TCP Overview</a>
+<ul>
+<li><a href="transmission-control-protocol-tcp.html#making-the-connection" id="toc-making-the-connection"><span class="toc-section-number">14.4.1</span> Making the Connection</a></li>
+<li><a href="transmission-control-protocol-tcp.html#transmitting-data" id="toc-transmitting-data"><span class="toc-section-number">14.4.2</span> Transmitting Data</a></li>
+<li><a href="transmission-control-protocol-tcp.html#closing-the-connection" id="toc-closing-the-connection"><span class="toc-section-number">14.4.3</span> Closing the Connection</a></li>
+</ul></li>
+<li><a href="transmission-control-protocol-tcp.html#data-integrity" id="toc-data-integrity"><span class="toc-section-number">14.5</span> Data Integrity</a>
+<ul>
+<li><a href="transmission-control-protocol-tcp.html#packet-ordering" id="toc-packet-ordering"><span class="toc-section-number">14.5.1</span> Packet Ordering</a></li>
+<li><a href="transmission-control-protocol-tcp.html#error-detection" id="toc-error-detection"><span class="toc-section-number">14.5.2</span> Error Detection</a></li>
+</ul></li>
+<li><a href="transmission-control-protocol-tcp.html#flow-control" id="toc-flow-control"><span class="toc-section-number">14.6</span> Flow Control</a></li>
+<li><a href="transmission-control-protocol-tcp.html#congestion-control" id="toc-congestion-control"><span class="toc-section-number">14.7</span> Congestion Control</a>
+<ul>
+<li><a href="transmission-control-protocol-tcp.html#slow-start" id="toc-slow-start"><span class="toc-section-number">14.7.1</span> Slow Start</a></li>
+<li><a href="transmission-control-protocol-tcp.html#congestion-avoidance" id="toc-congestion-avoidance"><span class="toc-section-number">14.7.2</span> Congestion Avoidance</a></li>
+</ul></li>
+<li><a href="transmission-control-protocol-tcp.html#reflect-8" id="toc-reflect-8"><span class="toc-section-number">14.8</span> Reflect</a></li>
+</ul></li>
+<li><a href="user-datagram-protocol-udp.html#user-datagram-protocol-udp" id="toc-user-datagram-protocol-udp"><span class="toc-section-number">15</span> User Datagram Protocol (UDP)</a>
+<ul>
+<li><a href="user-datagram-protocol-udp.html#goals-of-udp" id="toc-goals-of-udp"><span class="toc-section-number">15.1</span> Goals of UDP</a></li>
+<li><a href="user-datagram-protocol-udp.html#location-in-the-network-stack-1" id="toc-location-in-the-network-stack-1"><span class="toc-section-number">15.2</span> Location in the Network Stack</a></li>
+<li><a href="user-datagram-protocol-udp.html#udp-ports" id="toc-udp-ports"><span class="toc-section-number">15.3</span> UDP Ports</a></li>
+<li><a href="user-datagram-protocol-udp.html#udp-overview" id="toc-udp-overview"><span class="toc-section-number">15.4</span> UDP Overview</a></li>
+<li><a href="user-datagram-protocol-udp.html#data-integrity-1" id="toc-data-integrity-1"><span class="toc-section-number">15.5</span> Data Integrity</a>
+<ul>
+<li><a href="user-datagram-protocol-udp.html#error-detection-1" id="toc-error-detection-1"><span class="toc-section-number">15.5.1</span> Error Detection</a></li>
+</ul></li>
+<li><a href="user-datagram-protocol-udp.html#maximum-payload-without-fragmentation" id="toc-maximum-payload-without-fragmentation"><span class="toc-section-number">15.6</span> Maximum Payload Without Fragmentation</a></li>
+<li><a href="user-datagram-protocol-udp.html#whats-the-use" id="toc-whats-the-use"><span class="toc-section-number">15.7</span> What’s the Use?</a></li>
+<li><a href="user-datagram-protocol-udp.html#udp-datagram-sockets" id="toc-udp-datagram-sockets"><span class="toc-section-number">15.8</span> UDP (Datagram) Sockets</a>
+<ul>
+<li><a href="user-datagram-protocol-udp.html#server-procedure" id="toc-server-procedure"><span class="toc-section-number">15.8.1</span> Server Procedure</a></li>
+<li><a href="user-datagram-protocol-udp.html#client-procedure" id="toc-client-procedure"><span class="toc-section-number">15.8.2</span> Client Procedure</a></li>
+</ul></li>
+<li><a href="user-datagram-protocol-udp.html#reflect-9" id="toc-reflect-9"><span class="toc-section-number">15.9</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-validating-a-tcp-packet.html#project-validating-a-tcp-packet" id="toc-project-validating-a-tcp-packet"><span class="toc-section-number">16</span> Project: Validating a TCP Packet</a>
+<ul>
+<li><a href="project-validating-a-tcp-packet.html#banned-functions" id="toc-banned-functions"><span class="toc-section-number">16.1</span> Banned Functions</a></li>
+<li><a href="project-validating-a-tcp-packet.html#how-to-code-this" id="toc-how-to-code-this"><span class="toc-section-number">16.2</span> How To Code This</a></li>
+<li><a href="project-validating-a-tcp-packet.html#checksum-in-general" id="toc-checksum-in-general"><span class="toc-section-number">16.3</span> Checksum in General</a></li>
+<li><a href="project-validating-a-tcp-packet.html#input-file-details" id="toc-input-file-details"><span class="toc-section-number">16.4</span> Input File Details</a>
+<ul>
+<li><a href="project-validating-a-tcp-packet.html#the-.txt-file" id="toc-the-.txt-file"><span class="toc-section-number">16.4.1</span> The <code>.txt</code> File</a></li>
+<li><a href="project-validating-a-tcp-packet.html#the-.dat-file" id="toc-the-.dat-file"><span class="toc-section-number">16.4.2</span> The <code>.dat</code> File</a></li>
+</ul></li>
+<li><a href="project-validating-a-tcp-packet.html#how-on-earth-do-you-compute-a-tcp-checksum" id="toc-how-on-earth-do-you-compute-a-tcp-checksum"><span class="toc-section-number">16.5</span> How On Earth Do You Compute A TCP Checksum?</a></li>
+<li><a href="project-validating-a-tcp-packet.html#the-ip-pseudo-header" id="toc-the-ip-pseudo-header"><span class="toc-section-number">16.6</span> The IP Pseudo Header</a>
+<ul>
+<li><a href="project-validating-a-tcp-packet.html#example-pseudo-header" id="toc-example-pseudo-header"><span class="toc-section-number">16.6.1</span> Example Pseudo Header</a></li>
+<li><a href="project-validating-a-tcp-packet.html#getting-the-ip-address-bytes" id="toc-getting-the-ip-address-bytes"><span class="toc-section-number">16.6.2</span> Getting the IP Address Bytes</a></li>
+<li><a href="project-validating-a-tcp-packet.html#getting-the-tcp-data-length" id="toc-getting-the-tcp-data-length"><span class="toc-section-number">16.6.3</span> Getting the TCP Data Length</a></li>
+</ul></li>
+<li><a href="project-validating-a-tcp-packet.html#the-tcp-header-checksum" id="toc-the-tcp-header-checksum"><span class="toc-section-number">16.7</span> The TCP Header Checksum</a></li>
+<li><a href="project-validating-a-tcp-packet.html#actually-computing-the-checksum" id="toc-actually-computing-the-checksum"><span class="toc-section-number">16.8</span> Actually Computing the Checksum</a></li>
+<li><a href="project-validating-a-tcp-packet.html#final-comparison" id="toc-final-comparison"><span class="toc-section-number">16.9</span> Final Comparison</a></li>
+<li><a href="project-validating-a-tcp-packet.html#output" id="toc-output"><span class="toc-section-number">16.10</span> Output</a></li>
+<li><a href="project-validating-a-tcp-packet.html#success" id="toc-success"><span class="toc-section-number">16.11</span> Success</a></li>
+</ul></li>
+<li><a href="ip-subnets-and-subnet-masks.html#ip-subnets-and-subnet-masks" id="toc-ip-subnets-and-subnet-masks"><span class="toc-section-number">17</span> IP Subnets and Subnet Masks</a>
+<ul>
+<li><a href="ip-subnets-and-subnet-masks.html#address-representation" id="toc-address-representation"><span class="toc-section-number">17.1</span> Address Representation</a></li>
+<li><a href="ip-subnets-and-subnet-masks.html#converting-from-dots-and-numbers" id="toc-converting-from-dots-and-numbers"><span class="toc-section-number">17.2</span> Converting from Dots-and-Numbers</a></li>
+<li><a href="ip-subnets-and-subnet-masks.html#converting-to-dots-and-numbers" id="toc-converting-to-dots-and-numbers"><span class="toc-section-number">17.3</span> Converting to Dots-and-Numbers</a></li>
+<li><a href="ip-subnets-and-subnet-masks.html#subnet-and-host-refresher" id="toc-subnet-and-host-refresher"><span class="toc-section-number">17.4</span> Subnet and Host Refresher</a></li>
+<li><a href="ip-subnets-and-subnet-masks.html#subnet-mask-refresher" id="toc-subnet-mask-refresher"><span class="toc-section-number">17.5</span> Subnet Mask Refresher</a></li>
+<li><a href="ip-subnets-and-subnet-masks.html#computing-the-subnet-mask-from-slash-notation" id="toc-computing-the-subnet-mask-from-slash-notation"><span class="toc-section-number">17.6</span> Computing the Subnet Mask from Slash Notation</a></li>
+<li><a href="ip-subnets-and-subnet-masks.html#finding-the-subnet-for-an-ip-address" id="toc-finding-the-subnet-for-an-ip-address"><span class="toc-section-number">17.7</span> Finding the Subnet for an IP address</a></li>
+<li><a href="ip-subnets-and-subnet-masks.html#reflect-10" id="toc-reflect-10"><span class="toc-section-number">17.8</span> Reflect</a></li>
+</ul></li>
+<li><a href="ip-routing.html#ip-routing" id="toc-ip-routing"><span class="toc-section-number">18</span> IP Routing</a>
+<ul>
+<li><a href="ip-routing.html#routing-protocols" id="toc-routing-protocols"><span class="toc-section-number">18.1</span> Routing Protocols</a>
+<ul>
+<li><a href="ip-routing.html#interior-gateway-protocols" id="toc-interior-gateway-protocols"><span class="toc-section-number">18.1.1</span> Interior Gateway Protocols</a></li>
+<li><a href="ip-routing.html#exterior-gateway-protocols" id="toc-exterior-gateway-protocols"><span class="toc-section-number">18.1.2</span> Exterior Gateway Protocols</a></li>
+</ul></li>
+<li><a href="ip-routing.html#routing-tables" id="toc-routing-tables"><span class="toc-section-number">18.2</span> Routing tables</a></li>
+<li><a href="ip-routing.html#routing-algorithm" id="toc-routing-algorithm"><span class="toc-section-number">18.3</span> Routing Algorithm</a></li>
+<li><a href="ip-routing.html#routing-example" id="toc-routing-example"><span class="toc-section-number">18.4</span> Routing Example</a></li>
+<li><a href="ip-routing.html#routing-loops-and-time-to-live" id="toc-routing-loops-and-time-to-live"><span class="toc-section-number">18.5</span> Routing Loops and Time-To-Live</a></li>
+<li><a href="ip-routing.html#the-broadcast-address" id="toc-the-broadcast-address"><span class="toc-section-number">18.6</span> The Broadcast Address</a></li>
+<li><a href="ip-routing.html#reflect-11" id="toc-reflect-11"><span class="toc-section-number">18.7</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-computing-and-finding-subnets.html#project-computing-and-finding-subnets" id="toc-project-computing-and-finding-subnets"><span class="toc-section-number">19</span> Project: Computing and Finding Subnets</a>
+<ul>
+<li><a href="project-computing-and-finding-subnets.html#restrictions-2" id="toc-restrictions-2"><span class="toc-section-number">19.1</span> Restrictions</a></li>
+<li><a href="project-computing-and-finding-subnets.html#what-to-do" id="toc-what-to-do"><span class="toc-section-number">19.2</span> What To Do</a></li>
+<li><a href="project-computing-and-finding-subnets.html#testing-as-you-go" id="toc-testing-as-you-go"><span class="toc-section-number">19.3</span> Testing as you Go</a></li>
+<li><a href="project-computing-and-finding-subnets.html#running-the-program" id="toc-running-the-program"><span class="toc-section-number">19.4</span> Running the Program</a></li>
+</ul></li>
+<li><a href="the-link-layer-and-ethernet.html#the-link-layer-and-ethernet" id="toc-the-link-layer-and-ethernet"><span class="toc-section-number">20</span> The Link Layer and Ethernet</a>
+<ul>
+<li><a href="the-link-layer-and-ethernet.html#a-quick-note-on-octets" id="toc-a-quick-note-on-octets"><span class="toc-section-number">20.1</span> A Quick Note on Octets</a></li>
+<li><a href="the-link-layer-and-ethernet.html#frames-versus-packets" id="toc-frames-versus-packets"><span class="toc-section-number">20.2</span> Frames versus Packets</a></li>
+<li><a href="the-link-layer-and-ethernet.html#mac-addresses" id="toc-mac-addresses"><span class="toc-section-number">20.3</span> MAC Addresses</a></li>
+<li><a href="the-link-layer-and-ethernet.html#were-all-in-the-same-room-typically" id="toc-were-all-in-the-same-room-typically"><span class="toc-section-number">20.4</span> We’re All In The Same Room (Typically)</a></li>
+<li><a href="the-link-layer-and-ethernet.html#multiple-access-method" id="toc-multiple-access-method"><span class="toc-section-number">20.5</span> Multiple Access Method</a></li>
+<li><a href="the-link-layer-and-ethernet.html#ethernet" id="toc-ethernet"><span class="toc-section-number">20.6</span> Ethernet</a>
+<ul>
+<li><a href="the-link-layer-and-ethernet.html#two-layers-of-ethernet" id="toc-two-layers-of-ethernet"><span class="toc-section-number">20.6.1</span> Two Layers of Ethernet?</a></li>
+</ul></li>
+<li><a href="the-link-layer-and-ethernet.html#reflect-12" id="toc-reflect-12"><span class="toc-section-number">20.7</span> Reflect</a></li>
+</ul></li>
+<li><a href="arp-the-address-resolution-protocol.html#arp-the-address-resolution-protocol" id="toc-arp-the-address-resolution-protocol"><span class="toc-section-number">21</span> ARP: The Address Resolution Protocol</a>
+<ul>
+<li><a href="arp-the-address-resolution-protocol.html#ethernet-broadcast-frames" id="toc-ethernet-broadcast-frames"><span class="toc-section-number">21.1</span> Ethernet Broadcast Frames</a></li>
+<li><a href="arp-the-address-resolution-protocol.html#arpthe-address-resolution-protocol" id="toc-arpthe-address-resolution-protocol"><span class="toc-section-number">21.2</span> ARP–The Address Resolution Protocol</a></li>
+<li><a href="arp-the-address-resolution-protocol.html#arp-caching" id="toc-arp-caching"><span class="toc-section-number">21.3</span> ARP Caching</a></li>
+<li><a href="arp-the-address-resolution-protocol.html#arp-structure" id="toc-arp-structure"><span class="toc-section-number">21.4</span> ARP Structure</a></li>
+<li><a href="arp-the-address-resolution-protocol.html#arp-requestresponse" id="toc-arp-requestresponse"><span class="toc-section-number">21.5</span> ARP Request/Response</a></li>
+<li><a href="arp-the-address-resolution-protocol.html#other-arp-features" id="toc-other-arp-features"><span class="toc-section-number">21.6</span> Other ARP Features</a>
+<ul>
+<li><a href="arp-the-address-resolution-protocol.html#arp-announcements" id="toc-arp-announcements"><span class="toc-section-number">21.6.1</span> ARP Announcements</a></li>
+<li><a href="arp-the-address-resolution-protocol.html#arp-probe" id="toc-arp-probe"><span class="toc-section-number">21.6.2</span> ARP Probe</a></li>
+</ul></li>
+<li><a href="arp-the-address-resolution-protocol.html#ipv6-and-arp" id="toc-ipv6-and-arp"><span class="toc-section-number">21.7</span> IPv6 and ARP</a></li>
+<li><a href="arp-the-address-resolution-protocol.html#reflect-13" id="toc-reflect-13"><span class="toc-section-number">21.8</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-6-routing-with-dijkstras.html#project-6-routing-with-dijkstras" id="toc-project-6-routing-with-dijkstras"><span class="toc-section-number">22</span> Project 6: Routing with Dijkstra’s</a>
+<ul>
+<li><a href="project-6-routing-with-dijkstras.html#banned-functions-1" id="toc-banned-functions-1"><span class="toc-section-number">22.1</span> Banned Functions</a></li>
+<li><a href="project-6-routing-with-dijkstras.html#graphs-refresher" id="toc-graphs-refresher"><span class="toc-section-number">22.2</span> Graphs Refresher</a></li>
+<li><a href="project-6-routing-with-dijkstras.html#dijkstras-algorithm-overview" id="toc-dijkstras-algorithm-overview"><span class="toc-section-number">22.3</span> Dijkstra’s Algorithm Overview</a></li>
+<li><a href="project-6-routing-with-dijkstras.html#dijkstras-implementation" id="toc-dijkstras-implementation"><span class="toc-section-number">22.4</span> Dijkstra’s Implementation</a>
+<ul>
+<li><a href="project-6-routing-with-dijkstras.html#getting-the-minimum-distance" id="toc-getting-the-minimum-distance"><span class="toc-section-number">22.4.1</span> Getting the Minimum Distance</a></li>
+</ul></li>
+<li><a href="project-6-routing-with-dijkstras.html#what-about-our-project" id="toc-what-about-our-project"><span class="toc-section-number">22.5</span> What About Our Project?</a>
+<ul>
+<li><a href="project-6-routing-with-dijkstras.html#the-function-inputs-and-outputs" id="toc-the-function-inputs-and-outputs"><span class="toc-section-number">22.5.1</span> The Function, Inputs, and Outputs</a></li>
+<li><a href="project-6-routing-with-dijkstras.html#the-graph-representation" id="toc-the-graph-representation"><span class="toc-section-number">22.5.2</span> The Graph Representation</a></li>
+</ul></li>
+<li><a href="project-6-routing-with-dijkstras.html#input-file-and-example-output" id="toc-input-file-and-example-output"><span class="toc-section-number">22.6</span> Input File and Example Output</a></li>
+<li><a href="project-6-routing-with-dijkstras.html#hints" id="toc-hints"><span class="toc-section-number">22.7</span> Hints</a></li>
+</ul></li>
+<li><a href="project-sniff-arp-packets-with-wireshark.html#project-sniff-arp-packets-with-wireshark" id="toc-project-sniff-arp-packets-with-wireshark"><span class="toc-section-number">23</span> Project: Sniff ARP packets with WireShark</a>
+<ul>
+<li><a href="project-sniff-arp-packets-with-wireshark.html#what-to-create" id="toc-what-to-create"><span class="toc-section-number">23.1</span> What to Create</a></li>
+<li><a href="project-sniff-arp-packets-with-wireshark.html#step-by-step" id="toc-step-by-step"><span class="toc-section-number">23.2</span> Step by Step</a></li>
+</ul></li>
+<li><a href="network-hardware.html#network-hardware" id="toc-network-hardware"><span class="toc-section-number">24</span> Network Hardware</a>
+<ul>
+<li><a href="network-hardware.html#terminology-and-components" id="toc-terminology-and-components"><span class="toc-section-number">24.1</span> Terminology and Components</a></li>
+<li><a href="network-hardware.html#reflect-14" id="toc-reflect-14"><span class="toc-section-number">24.2</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-packet-tracer-connect-two-computers.html#project-packet-tracer-connect-two-computers" id="toc-project-packet-tracer-connect-two-computers"><span class="toc-section-number">25</span> Project: Packet Tracer: Connect Two Computers</a>
+<ul>
+<li><a href="project-packet-tracer-connect-two-computers.html#adding-computers-to-the-lan" id="toc-adding-computers-to-the-lan"><span class="toc-section-number">25.1</span> Adding Computers to the LAN</a></li>
+<li><a href="project-packet-tracer-connect-two-computers.html#wiring-pcs-directly-together" id="toc-wiring-pcs-directly-together"><span class="toc-section-number">25.2</span> Wiring PCs Directly Together</a></li>
+<li><a href="project-packet-tracer-connect-two-computers.html#setting-up-the-ip-network" id="toc-setting-up-the-ip-network"><span class="toc-section-number">25.3</span> Setting Up the IP Network</a></li>
+<li><a href="project-packet-tracer-connect-two-computers.html#pinging-across-the-network" id="toc-pinging-across-the-network"><span class="toc-section-number">25.4</span> Pinging Across the Network</a></li>
+<li><a href="project-packet-tracer-connect-two-computers.html#saving-the-project" id="toc-saving-the-project"><span class="toc-section-number">25.5</span> Saving the Project</a></li>
+</ul></li>
+<li><a href="project-packet-tracer-using-a-switch.html#project-packet-tracer-using-a-switch" id="toc-project-packet-tracer-using-a-switch"><span class="toc-section-number">26</span> Project: Packet Tracer: Using a Switch</a>
+<ul>
+<li><a href="project-packet-tracer-using-a-switch.html#add-some-pcs" id="toc-add-some-pcs"><span class="toc-section-number">26.1</span> Add Some PCs</a></li>
+<li><a href="project-packet-tracer-using-a-switch.html#add-a-switch" id="toc-add-a-switch"><span class="toc-section-number">26.2</span> Add a Switch</a></li>
+<li><a href="project-packet-tracer-using-a-switch.html#wire-it-up" id="toc-wire-it-up"><span class="toc-section-number">26.3</span> Wire It Up</a></li>
+<li><a href="project-packet-tracer-using-a-switch.html#test-pings" id="toc-test-pings"><span class="toc-section-number">26.4</span> Test Pings!</a></li>
+</ul></li>
+<li><a href="project-packet-tracer-using-a-router.html#project-packet-tracer-using-a-router" id="toc-project-packet-tracer-using-a-router"><span class="toc-section-number">27</span> Project: Packet Tracer: Using a Router</a>
+<ul>
+<li><a href="project-packet-tracer-using-a-router.html#build-the-lans" id="toc-build-the-lans"><span class="toc-section-number">27.1</span> Build the LANs</a></li>
+<li><a href="project-packet-tracer-using-a-router.html#adding-a-router" id="toc-adding-a-router"><span class="toc-section-number">27.2</span> Adding a Router</a></li>
+<li><a href="project-packet-tracer-using-a-router.html#adding-a-default-route" id="toc-adding-a-default-route"><span class="toc-section-number">27.3</span> Adding a Default Route</a></li>
+<li><a href="project-packet-tracer-using-a-router.html#try-it-out" id="toc-try-it-out"><span class="toc-section-number">27.4</span> Try It Out!</a></li>
+</ul></li>
+<li><a href="project-packet-tracer-multiple-routers.html#project-packet-tracer-multiple-routers" id="toc-project-packet-tracer-multiple-routers"><span class="toc-section-number">28</span> Project: Packet Tracer: Multiple Routers</a>
+<ul>
+<li><a href="project-packet-tracer-multiple-routers.html#what-were-building" id="toc-what-were-building"><span class="toc-section-number">28.1</span> What We’re Building</a></li>
+<li><a href="project-packet-tracer-multiple-routers.html#drag-out-the-components" id="toc-drag-out-the-components"><span class="toc-section-number">28.2</span> Drag Out the Components</a></li>
+<li><a href="project-packet-tracer-multiple-routers.html#setting-up-the-middle-router" id="toc-setting-up-the-middle-router"><span class="toc-section-number">28.3</span> Setting Up the Middle Router</a></li>
+<li><a href="project-packet-tracer-multiple-routers.html#set-up-the-three-lan-subnets" id="toc-set-up-the-three-lan-subnets"><span class="toc-section-number">28.4</span> Set up the Three LAN Subnets</a></li>
+<li><a href="project-packet-tracer-multiple-routers.html#set-the-default-gateway-on-all-pcs" id="toc-set-the-default-gateway-on-all-pcs"><span class="toc-section-number">28.5</span> Set the Default Gateway on All PCs</a></li>
+<li><a href="project-packet-tracer-multiple-routers.html#setting-up-the-router-subnets" id="toc-setting-up-the-router-subnets"><span class="toc-section-number">28.6</span> Setting Up the Router Subnets</a></li>
+<li><a href="project-packet-tracer-multiple-routers.html#setting-up-the-routing-tables" id="toc-setting-up-the-routing-tables"><span class="toc-section-number">28.7</span> Setting Up the Routing Tables</a></li>
+<li><a href="project-packet-tracer-multiple-routers.html#test-it-out" id="toc-test-it-out"><span class="toc-section-number">28.8</span> Test It Out!</a></li>
+</ul></li>
+<li><a href="select.html#select" id="toc-select"><span class="toc-section-number">29</span> Select</a>
+<ul>
+<li><a href="select.html#the-problem-were-solving" id="toc-the-problem-were-solving"><span class="toc-section-number">29.1</span> The Problem We’re Solving</a></li>
+<li><a href="select.html#using-select" id="toc-using-select"><span class="toc-section-number">29.2</span> Using <code>select()</code></a></li>
+<li><a href="select.html#using-select-with-listening-sockets" id="toc-using-select-with-listening-sockets"><span class="toc-section-number">29.3</span> Using <code>select()</code> with Listening Sockets</a></li>
+<li><a href="select.html#the-main-algorithm" id="toc-the-main-algorithm"><span class="toc-section-number">29.4</span> The Main Algorithm</a></li>
+<li><a href="select.html#what-about-those-other-arguments-to-select" id="toc-what-about-those-other-arguments-to-select"><span class="toc-section-number">29.5</span> What About Those Other Arguments to <code>select()</code>?</a>
+<ul>
+<li><a href="select.html#the-timeout" id="toc-the-timeout"><span class="toc-section-number">29.5.1</span> The Timeout</a></li>
+</ul></li>
+<li><a href="select.html#using-select-with-send" id="toc-using-select-with-send"><span class="toc-section-number">29.6</span> Using <code>select()</code> with <code>send()</code></a></li>
+<li><a href="select.html#reflect-15" id="toc-reflect-15"><span class="toc-section-number">29.7</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-using-select.html#project-using-select" id="toc-project-using-select"><span class="toc-section-number">30</span> Project: Using Select</a>
+<ul>
+<li><a href="project-using-select.html#demo-code" id="toc-demo-code"><span class="toc-section-number">30.1</span> Demo Code</a></li>
+<li><a href="project-using-select.html#features-to-add" id="toc-features-to-add"><span class="toc-section-number">30.2</span> Features to Add</a></li>
+<li><a href="project-using-select.html#example-run" id="toc-example-run"><span class="toc-section-number">30.3</span> Example Run</a></li>
+</ul></li>
+<li><a href="domain-name-system-dns.html#domain-name-system-dns" id="toc-domain-name-system-dns"><span class="toc-section-number">31</span> Domain Name System (DNS)</a>
+<ul>
+<li><a href="domain-name-system-dns.html#typical-usage" id="toc-typical-usage"><span class="toc-section-number">31.1</span> Typical Usage</a></li>
+<li><a href="domain-name-system-dns.html#domains-and-ip-addresses" id="toc-domains-and-ip-addresses"><span class="toc-section-number">31.2</span> Domains and IP Addresses</a></li>
+<li><a href="domain-name-system-dns.html#domain-name-servers" id="toc-domain-name-servers"><span class="toc-section-number">31.3</span> (Domain) Name Servers</a></li>
+<li><a href="domain-name-system-dns.html#root-name-servers" id="toc-root-name-servers"><span class="toc-section-number">31.4</span> Root Name Servers</a></li>
+<li><a href="domain-name-system-dns.html#example-run-1" id="toc-example-run-1"><span class="toc-section-number">31.5</span> Example Run</a></li>
+<li><a href="domain-name-system-dns.html#zones" id="toc-zones"><span class="toc-section-number">31.6</span> Zones</a></li>
+<li><a href="domain-name-system-dns.html#resolver-library" id="toc-resolver-library"><span class="toc-section-number">31.7</span> Resolver Library</a></li>
+<li><a href="domain-name-system-dns.html#caching-servers" id="toc-caching-servers"><span class="toc-section-number">31.8</span> Caching Servers</a>
+<ul>
+<li><a href="domain-name-system-dns.html#time-to-live" id="toc-time-to-live"><span class="toc-section-number">31.8.1</span> Time To Live</a></li>
+</ul></li>
+<li><a href="domain-name-system-dns.html#record-types" id="toc-record-types"><span class="toc-section-number">31.9</span> Record Types</a></li>
+<li><a href="domain-name-system-dns.html#dynamic-dns" id="toc-dynamic-dns"><span class="toc-section-number">31.10</span> Dynamic DNS</a></li>
+<li><a href="domain-name-system-dns.html#reverse-dns" id="toc-reverse-dns"><span class="toc-section-number">31.11</span> Reverse DNS</a></li>
+<li><a href="domain-name-system-dns.html#reflect-16" id="toc-reflect-16"><span class="toc-section-number">31.12</span> Reflect</a></li>
+</ul></li>
+<li><a href="network-address-translation-nat.html#network-address-translation-nat" id="toc-network-address-translation-nat"><span class="toc-section-number">32</span> Network Address Translation (NAT)</a>
+<ul>
+<li><a href="network-address-translation-nat.html#a-snail-mail-analogy" id="toc-a-snail-mail-analogy"><span class="toc-section-number">32.1</span> A Snail-Mail Analogy</a></li>
+<li><a href="network-address-translation-nat.html#why" id="toc-why"><span class="toc-section-number">32.2</span> Why?</a>
+<ul>
+<li><a href="network-address-translation-nat.html#hiding-your-network" id="toc-hiding-your-network"><span class="toc-section-number">32.2.1</span> Hiding Your Network</a></li>
+<li><a href="network-address-translation-nat.html#ipv4-exhaustion" id="toc-ipv4-exhaustion"><span class="toc-section-number">32.2.2</span> IPv4 Exhaustion</a></li>
+</ul></li>
+<li><a href="network-address-translation-nat.html#private-networks-1" id="toc-private-networks-1"><span class="toc-section-number">32.3</span> Private Networks</a></li>
+<li><a href="network-address-translation-nat.html#how-it-works" id="toc-how-it-works"><span class="toc-section-number">32.4</span> How it Works</a></li>
+<li><a href="network-address-translation-nat.html#nat-and-ipv6" id="toc-nat-and-ipv6"><span class="toc-section-number">32.5</span> NAT and IPv6</a></li>
+<li><a href="network-address-translation-nat.html#port-forwarding" id="toc-port-forwarding"><span class="toc-section-number">32.6</span> Port Forwarding</a></li>
+<li><a href="network-address-translation-nat.html#review" id="toc-review"><span class="toc-section-number">32.7</span> Review</a></li>
+</ul></li>
+<li><a href="dynamic-host-configuration-protocol-dhcp.html#dynamic-host-configuration-protocol-dhcp" id="toc-dynamic-host-configuration-protocol-dhcp"><span class="toc-section-number">33</span> Dynamic Host Configuration Protocol (DHCP)</a>
+<ul>
+<li><a href="dynamic-host-configuration-protocol-dhcp.html#operation" id="toc-operation"><span class="toc-section-number">33.1</span> Operation</a></li>
+<li><a href="dynamic-host-configuration-protocol-dhcp.html#reflect-17" id="toc-reflect-17"><span class="toc-section-number">33.2</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-digging-dns-info.html#project-digging-dns-info" id="toc-project-digging-dns-info"><span class="toc-section-number">34</span> Project: Digging DNS Info</a>
+<ul>
+<li><a href="project-digging-dns-info.html#installation" id="toc-installation"><span class="toc-section-number">34.1</span> Installation</a></li>
+<li><a href="project-digging-dns-info.html#try-it-out-1" id="toc-try-it-out-1"><span class="toc-section-number">34.2</span> Try it Out</a></li>
+<li><a href="project-digging-dns-info.html#time-to-live-ttl" id="toc-time-to-live-ttl"><span class="toc-section-number">34.3</span> Time To Live (TTL)</a></li>
+<li><a href="project-digging-dns-info.html#authoritative-servers" id="toc-authoritative-servers"><span class="toc-section-number">34.4</span> Authoritative Servers</a></li>
+<li><a href="project-digging-dns-info.html#getting-the-root-name-servers" id="toc-getting-the-root-name-servers"><span class="toc-section-number">34.5</span> Getting the Root Name Servers</a></li>
+<li><a href="project-digging-dns-info.html#digging-at-a-specific-name-server" id="toc-digging-at-a-specific-name-server"><span class="toc-section-number">34.6</span> Digging at a Specific Name Server</a></li>
+<li><a href="project-digging-dns-info.html#digging-at-a-root-name-server" id="toc-digging-at-a-root-name-server"><span class="toc-section-number">34.7</span> Digging at a Root Name Server</a></li>
+<li><a href="project-digging-dns-info.html#what-to-do-1" id="toc-what-to-do-1"><span class="toc-section-number">34.8</span> What to Do</a></li>
+</ul></li>
+<li><a href="port-scanning.html#port-scanning" id="toc-port-scanning"><span class="toc-section-number">35</span> Port Scanning</a>
+<ul>
+<li><a href="port-scanning.html#mechanics-of-a-portscanner" id="toc-mechanics-of-a-portscanner"><span class="toc-section-number">35.1</span> Mechanics of a Portscanner</a>
+<ul>
+<li><a href="port-scanning.html#portscanning-udp" id="toc-portscanning-udp"><span class="toc-section-number">35.1.1</span> Portscanning UDP</a></li>
+</ul></li>
+<li><a href="port-scanning.html#reflect-18" id="toc-reflect-18"><span class="toc-section-number">35.2</span> Reflect</a></li>
+</ul></li>
+<li><a href="firewalls.html#firewalls" id="toc-firewalls"><span class="toc-section-number">36</span> Firewalls</a>
+<ul>
+<li><a href="firewalls.html#firewall-operation" id="toc-firewall-operation"><span class="toc-section-number">36.1</span> Firewall Operation</a></li>
+<li><a href="firewalls.html#firewalls-and-nat" id="toc-firewalls-and-nat"><span class="toc-section-number">36.2</span> Firewalls and NAT</a></li>
+<li><a href="firewalls.html#local-firewalls" id="toc-local-firewalls"><span class="toc-section-number">36.3</span> Local Firewalls</a></li>
+<li><a href="firewalls.html#reflect-19" id="toc-reflect-19"><span class="toc-section-number">36.4</span> Reflect</a></li>
+</ul></li>
+<li><a href="trusting-user-data.html#trusting-user-data" id="toc-trusting-user-data"><span class="toc-section-number">37</span> Trusting User Data</a>
+<ul>
+<li><a href="trusting-user-data.html#buffer-overflowoverrun" id="toc-buffer-overflowoverrun"><span class="toc-section-number">37.1</span> Buffer Overflow/Overrun</a></li>
+<li><a href="trusting-user-data.html#injection-attacks" id="toc-injection-attacks"><span class="toc-section-number">37.2</span> Injection Attacks</a>
+<ul>
+<li><a href="trusting-user-data.html#system-commands" id="toc-system-commands"><span class="toc-section-number">37.2.1</span> System Commands</a></li>
+<li><a href="trusting-user-data.html#sql-commands" id="toc-sql-commands"><span class="toc-section-number">37.2.2</span> SQL Commands</a></li>
+<li><a href="trusting-user-data.html#cross-site-scripting" id="toc-cross-site-scripting"><span class="toc-section-number">37.2.3</span> Cross-Site Scripting</a></li>
+</ul></li>
+<li><a href="trusting-user-data.html#reflect-20" id="toc-reflect-20"><span class="toc-section-number">37.3</span> Reflect</a></li>
+</ul></li>
+<li><a href="project-port-scanning.html#project-port-scanning" id="toc-project-port-scanning"><span class="toc-section-number">38</span> Project: Port Scanning</a></li>
+<li><a href="project-multiuser-chat-client-and-server.html#project-multiuser-chat-client-and-server" id="toc-project-multiuser-chat-client-and-server"><span class="toc-section-number">39</span> Project: Multiuser Chat Client and Server</a>
+<ul>
+<li><a href="project-multiuser-chat-client-and-server.html#overall-architecture" id="toc-overall-architecture"><span class="toc-section-number">39.1</span> Overall Architecture</a>
+<ul>
+<li><a href="project-multiuser-chat-client-and-server.html#server" id="toc-server"><span class="toc-section-number">39.1.1</span> Server</a></li>
+<li><a href="project-multiuser-chat-client-and-server.html#client" id="toc-client"><span class="toc-section-number">39.1.2</span> Client</a></li>
+</ul></li>
+<li><a href="project-multiuser-chat-client-and-server.html#client-io" id="toc-client-io"><span class="toc-section-number">39.2</span> Client I/O</a>
+<ul>
+<li><a href="project-multiuser-chat-client-and-server.html#special-user-input" id="toc-special-user-input"><span class="toc-section-number">39.2.1</span> Special User Input</a></li>
+</ul></li>
+<li><a href="project-multiuser-chat-client-and-server.html#the-client-tui" id="toc-the-client-tui"><span class="toc-section-number">39.3</span> The Client TUI</a>
+<ul>
+<li><a href="project-multiuser-chat-client-and-server.html#curses-variant-of-chatui" id="toc-curses-variant-of-chatui"><span class="toc-section-number">39.3.1</span> Curses Variant of <code>chatui</code></a></li>
+</ul></li>
+<li><a href="project-multiuser-chat-client-and-server.html#packet-structure" id="toc-packet-structure"><span class="toc-section-number">39.4</span> Packet Structure</a></li>
+<li><a href="project-multiuser-chat-client-and-server.html#json-payloads" id="toc-json-payloads"><span class="toc-section-number">39.5</span> JSON Payloads</a>
+<ul>
+<li><a href="project-multiuser-chat-client-and-server.html#hello-payload" id="toc-hello-payload"><span class="toc-section-number">39.5.1</span> “Hello” Payload</a></li>
+<li><a href="project-multiuser-chat-client-and-server.html#chat-payload" id="toc-chat-payload"><span class="toc-section-number">39.5.2</span> “Chat” Payload</a></li>
+<li><a href="project-multiuser-chat-client-and-server.html#join-payload" id="toc-join-payload"><span class="toc-section-number">39.5.3</span> “Join” Payload</a></li>
+<li><a href="project-multiuser-chat-client-and-server.html#leave-payload" id="toc-leave-payload"><span class="toc-section-number">39.5.4</span> “Leave” Payload</a></li>
+</ul></li>
+<li><a href="project-multiuser-chat-client-and-server.html#extensions-2" id="toc-extensions-2"><span class="toc-section-number">39.6</span> Extensions</a></li>
+<li><a href="project-multiuser-chat-client-and-server.html#some-recommendations" id="toc-some-recommendations"><span class="toc-section-number">39.7</span> Some Recommendations</a></li>
+</ul></li>
+<li><a href="appendix-bitwise.html#appendix-bitwise" id="toc-appendix-bitwise"><span class="toc-section-number">40</span> Appendix: Bitwise Operations</a>
+<ul>
+<li><a href="appendix-bitwise.html#coding-different-bases-in-python" id="toc-coding-different-bases-in-python"><span class="toc-section-number">40.1</span> Coding Different Bases in Python</a></li>
+<li><a href="appendix-bitwise.html#printing-and-converting" id="toc-printing-and-converting"><span class="toc-section-number">40.2</span> Printing and Converting</a></li>
+<li><a href="appendix-bitwise.html#bitwise-and" id="toc-bitwise-and"><span class="toc-section-number">40.3</span> Bitwise-AND</a></li>
+<li><a href="appendix-bitwise.html#bitwise-or" id="toc-bitwise-or"><span class="toc-section-number">40.4</span> Bitwise-OR</a></li>
+<li><a href="appendix-bitwise.html#bitwise-not" id="toc-bitwise-not"><span class="toc-section-number">40.5</span> Bitwise-NOT</a></li>
+<li><a href="appendix-bitwise.html#bitwise-shift" id="toc-bitwise-shift"><span class="toc-section-number">40.6</span> Bitwise shift</a></li>
+<li><a href="appendix-bitwise.html#setting-a-given-number-of-1-bits" id="toc-setting-a-given-number-of-1-bits"><span class="toc-section-number">40.7</span> Setting a Given Number of <code>1</code> bits</a></li>
+<li><a href="appendix-bitwise.html#reflect-21" id="toc-reflect-21"><span class="toc-section-number">40.8</span> Reflect</a></li>
+</ul></li>
+<li><a href="appendix-packettracer.html#appendix-packettracer" id="toc-appendix-packettracer"><span class="toc-section-number">41</span> Appendix: Installing Packet Tracer</a>
+<ul>
+<li><a href="appendix-packettracer.html#download-packet-tracer" id="toc-download-packet-tracer"><span class="toc-section-number">41.1</span> Download Packet Tracer</a></li>
+<li><a href="appendix-packettracer.html#run-packet-tracer" id="toc-run-packet-tracer"><span class="toc-section-number">41.2</span> Run Packet Tracer</a></li>
+</ul></li>
+<li><a href="appendix-threading.html#appendix-threading" id="toc-appendix-threading"><span class="toc-section-number">42</span> Appendix: Multithreading</a>
+<ul>
+<li><a href="appendix-threading.html#concepts" id="toc-concepts"><span class="toc-section-number">42.1</span> Concepts</a></li>
+<li><a href="appendix-threading.html#multithreading-in-python" id="toc-multithreading-in-python"><span class="toc-section-number">42.2</span> Multithreading In Python</a></li>
+<li><a href="appendix-threading.html#daemon-threads" id="toc-daemon-threads"><span class="toc-section-number">42.3</span> Daemon Threads</a>
+<ul>
+<li><a href="appendix-threading.html#this-is-somehow-related-to-ctrl-c" id="toc-this-is-somehow-related-to-ctrl-c"><span class="toc-section-number">42.3.1</span> This is Somehow Related to <code>CTRL-C</code></a></li>
+</ul></li>
+<li><a href="appendix-threading.html#reflect-22" id="toc-reflect-22"><span class="toc-section-number">42.4</span> Reflect</a></li>
+<li><a href="appendix-threading.html#threading-project" id="toc-threading-project"><span class="toc-section-number">42.5</span> Threading Project</a>
+<ul>
+<li><a href="appendix-threading.html#what-were-building-1" id="toc-what-were-building-1"><span class="toc-section-number">42.5.1</span> What We’re Building</a></li>
+<li><a href="appendix-threading.html#overall-structure" id="toc-overall-structure"><span class="toc-section-number">42.5.2</span> Overall Structure</a></li>
+<li><a href="appendix-threading.html#useful-functions" id="toc-useful-functions"><span class="toc-section-number">42.5.3</span> Useful Functions</a></li>
+<li><a href="appendix-threading.html#things-the-thread-running-function-needs" id="toc-things-the-thread-running-function-needs"><span class="toc-section-number">42.5.4</span> Things the Thread Running Function Needs</a></li>
+<li><a href="appendix-threading.html#example-run-2" id="toc-example-run-2"><span class="toc-section-number">42.5.5</span> Example Run</a></li>
+<li><a href="appendix-threading.html#extensions-3" id="toc-extensions-3"><span class="toc-section-number">42.5.6</span> Extensions</a></li>
+</ul></li>
+</ul></li>
+<li><a href="appendix-json.html#appendix-json" id="toc-appendix-json"><span class="toc-section-number">43</span> Appendix: JSON</a>
+<ul>
+<li><a href="appendix-json.html#json-versus-native" id="toc-json-versus-native"><span class="toc-section-number">43.1</span> JSON versus Native</a></li>
+<li><a href="appendix-json.html#converting-back-and-forth" id="toc-converting-back-and-forth"><span class="toc-section-number">43.2</span> Converting Back and Forth</a></li>
+<li><a href="appendix-json.html#pretty-printing" id="toc-pretty-printing"><span class="toc-section-number">43.3</span> Pretty Printing</a></li>
+<li><a href="appendix-json.html#double-quotes-are-important" id="toc-double-quotes-are-important"><span class="toc-section-number">43.4</span> Double Quotes are Important</a></li>
+<li><a href="appendix-json.html#reflect-23" id="toc-reflect-23"><span class="toc-section-number">43.5</span> Reflect</a></li>
+</ul></li>
+</ul>
+</nav>
+<!-- BG_NEW_CHAPTER -->
+<hr><div style="text-align:center"><span style="visibility: hidden"><a href="" rel="prev">Prev</a> | </span><a href="index.html">Contents</a><span> | <a href="foreword.html" rel="next">Next</a></span></div></body>
+</html>
