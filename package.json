@@ -1,0 +1,23 @@
+{
+  "name": "nightspirit-learn",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/sync-pdfjs.mjs && vite build",
+    "test": "python3 -m unittest discover -s tests"
+  },
+  "dependencies": {
+    "marked": "17.0.5",
+    "pdfjs-dist": "^6.4.299",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+data/
+__pycache__/
+*.pyc
+public/pdfjs/
+.env
+.env.*
+*.log
+*.sqlite*
+*.db
+*.pdf
+!content/ydkjs/**/*.pdf
+!content/beej/**/*.pdf
+backups/
