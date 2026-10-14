@@ -1,0 +1,2808 @@
+{
+  "name": "Nightspirit",
+  "version": 1,
+  "snapshot": "044120ef55564939cd35f5ddaf3f6c0a45d7b02c",
+  "books": [
+    {
+      "id": "js",
+      "title": "You Don’t Know JS Yet",
+      "subtitle": "The complete available second-edition collection",
+      "author": "Kyle Simpson",
+      "color": "gold",
+      "language": "JavaScript",
+      "description": "Go beneath the syntax. Understand scope, closures, objects, types, and the mechanisms that make JavaScript work.",
+      "notice": "Unmodified source text, © 2019–2025 Kyle Simpson. CC BY-NC-ND 4.0. Personal, noncommercial library; original quizzes are separate companion material. Draft and canceled volumes are labeled as supplied.",
+      "source": "https://github.com/getify/You-Dont-Know-JS/tree/2nd-ed",
+      "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+      "sections": [
+        {
+          "id": "js-introduction",
+          "title": "Before you begin",
+          "status": "Series introduction",
+          "lessons": [
+            {
+              "id": "js-overview",
+              "title": "Series overview & copyright",
+              "path": "ydkjs/README.md",
+              "kind": "frontmatter",
+              "minutes": 3,
+              "heads": []
+            },
+            {
+              "id": "js-preface",
+              "title": "Preface",
+              "path": "ydkjs/preface.md",
+              "kind": "frontmatter",
+              "minutes": 7,
+              "heads": [
+                "The Parts",
+                "The Title?",
+                "The Mission",
+                "The Path"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "get-started",
+          "title": "Get Started",
+          "status": "Published",
+          "lessons": [
+            {
+              "id": "get-started-readme",
+              "title": "About this volume",
+              "path": "ydkjs/get-started/README.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "get-started-foreword",
+              "title": "Foreword",
+              "path": "ydkjs/get-started/foreword.md",
+              "minutes": 3,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "get-started-ch1",
+              "title": "Chapter 1: What Is JavaScript?",
+              "path": "ydkjs/get-started/ch1.md",
+              "minutes": 32,
+              "kind": "chapter",
+              "heads": [
+                "About This Book",
+                "What's With That Name?",
+                "Language Specification",
+                "Many Faces",
+                "Backwards & Forwards",
+                "What's in an Interpretation?",
+                "*Strict*ly Speaking",
+                "Defined"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "get-started-ch2",
+              "title": "Chapter 2: Surveying JS",
+              "path": "ydkjs/get-started/ch2.md",
+              "minutes": 30,
+              "kind": "chapter",
+              "heads": [
+                "Each File is a Program",
+                "Values",
+                "Declaring and Using Variables",
+                "Functions",
+                "Comparisons",
+                "How We Organize in JS",
+                "The Rabbit Hole Deepens"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "get-started-ch3",
+              "title": "Chapter 3: Digging to the Roots of JS",
+              "path": "ydkjs/get-started/ch3.md",
+              "minutes": 18,
+              "kind": "chapter",
+              "heads": [
+                "Iteration",
+                "Closure",
+                "`this` Keyword",
+                "Prototypes",
+                "Asking \"Why?\""
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "get-started-ch4",
+              "title": "Chapter 4: The Bigger Picture",
+              "path": "ydkjs/get-started/ch4.md",
+              "minutes": 12,
+              "kind": "chapter",
+              "heads": [
+                "Pillar 1: Scope and Closure",
+                "Pillar 2: Prototypes",
+                "Pillar 3: Types and Coercion",
+                "With the Grain",
+                "In Order"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "get-started-apa",
+              "title": "Appendix A: Exploring Further",
+              "path": "ydkjs/get-started/apA.md",
+              "minutes": 9,
+              "kind": "appendix",
+              "heads": [
+                "Values vs. References",
+                "So Many Function Forms",
+                "Coercive Conditional Comparison",
+                "Prototypal \"Classes\""
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "get-started-apb",
+              "title": "Appendix B: Practice, Practice, Practice!",
+              "path": "ydkjs/get-started/apB.md",
+              "minutes": 6,
+              "kind": "appendix",
+              "heads": [
+                "Practicing Comparisons",
+                "Practicing Closure",
+                "Practicing Prototypes",
+                "Suggested Solutions"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "get-started-toc",
+              "title": "Table of contents",
+              "path": "ydkjs/get-started/toc.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [
+                "Table of Contents"
+              ],
+              "placeholder": false
+            }
+          ]
+        },
+        {
+          "id": "scope-closures",
+          "title": "Scope & Closures",
+          "status": "Published",
+          "lessons": [
+            {
+              "id": "scope-closures-readme",
+              "title": "About this volume",
+              "path": "ydkjs/scope-closures/README.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-foreword",
+              "title": "Foreword",
+              "path": "ydkjs/scope-closures/foreword.md",
+              "minutes": 2,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-ch1",
+              "title": "Chapter 1: What's the Scope?",
+              "path": "ydkjs/scope-closures/ch1.md",
+              "minutes": 16,
+              "kind": "chapter",
+              "heads": [
+                "About This Book",
+                "Compiled vs. Interpreted",
+                "Compiling Code",
+                "Compiler Speak",
+                "Cheating: Runtime Scope Modifications",
+                "Lexical Scope"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-ch2",
+              "title": "Chapter 2: Illustrating Lexical Scope",
+              "path": "ydkjs/scope-closures/ch2.md",
+              "minutes": 16,
+              "kind": "chapter",
+              "heads": [
+                "Marbles, and Buckets, and Bubbles... Oh My!",
+                "A Conversation Among Friends",
+                "Nested Scope",
+                "Continue the Conversation"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-ch3",
+              "title": "Chapter 3: The Scope Chain",
+              "path": "ydkjs/scope-closures/ch3.md",
+              "minutes": 14,
+              "kind": "chapter",
+              "heads": [
+                "\"Lookup\" Is (Mostly) Conceptual",
+                "Shadowing",
+                "Function Name Scope",
+                "Arrow Functions",
+                "Backing Out"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-ch4",
+              "title": "Chapter 4: Around the Global Scope",
+              "path": "ydkjs/scope-closures/ch4.md",
+              "minutes": 16,
+              "kind": "chapter",
+              "heads": [
+                "Why Global Scope?",
+                "Where Exactly is this Global Scope?",
+                "Global This",
+                "Globally Aware"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-ch5",
+              "title": "Chapter 5: The (Not So) Secret Lifecycle of Variables",
+              "path": "ydkjs/scope-closures/ch5.md",
+              "minutes": 22,
+              "kind": "chapter",
+              "heads": [
+                "When Can I Use a Variable?",
+                "Hoisting: Yet Another Metaphor",
+                "Re-declaration?",
+                "Uninitialized Variables (aka, TDZ)",
+                "Finally Initialized"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-ch6",
+              "title": "Chapter 6: Limiting Scope Exposure",
+              "path": "ydkjs/scope-closures/ch6.md",
+              "minutes": 27,
+              "kind": "chapter",
+              "heads": [
+                "Least Exposure",
+                "Hiding in Plain (Function) Scope",
+                "Scoping with Blocks",
+                "Function Declarations in Blocks (FiB)",
+                "Blocked Over"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-ch7",
+              "title": "Chapter 7: Using Closures",
+              "path": "ydkjs/scope-closures/ch7.md",
+              "minutes": 29,
+              "kind": "chapter",
+              "heads": [
+                "See the Closure",
+                "The Closure Lifecycle and Garbage Collection (GC)",
+                "An Alternative Perspective",
+                "Why Closure?",
+                "Closer to Closure"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-ch8",
+              "title": "Chapter 8: The Module Pattern",
+              "path": "ydkjs/scope-closures/ch8.md",
+              "minutes": 14,
+              "kind": "chapter",
+              "heads": [
+                "Encapsulation and Least Exposure (POLE)",
+                "What Is a Module?",
+                "Node CommonJS Modules",
+                "Modern ES Modules (ESM)",
+                "Exit Scope"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-apa",
+              "title": "Appendix A: Exploring Further",
+              "path": "ydkjs/scope-closures/apA.md",
+              "minutes": 38,
+              "kind": "appendix",
+              "heads": [
+                "Implied Scopes",
+                "Anonymous vs. Named Functions",
+                "Hoisting: Functions and Variables",
+                "The Case for `var`",
+                "What's the Deal with TDZ?",
+                "Are Synchronous Callbacks Still Closures?",
+                "Classic Module Variations"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-apb",
+              "title": "Appendix B: Practice",
+              "path": "ydkjs/scope-closures/apB.md",
+              "minutes": 15,
+              "kind": "appendix",
+              "heads": [
+                "Buckets of Marbles",
+                "Closure (PART 1)",
+                "Closure (PART 2)",
+                "Closure (PART 3)",
+                "Modules",
+                "Suggested Solutions"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "scope-closures-toc",
+              "title": "Table of contents",
+              "path": "ydkjs/scope-closures/toc.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [
+                "Table of Contents"
+              ],
+              "placeholder": false
+            }
+          ]
+        },
+        {
+          "id": "objects-classes",
+          "title": "Objects & Classes",
+          "status": "Stable draft",
+          "lessons": [
+            {
+              "id": "objects-classes-readme",
+              "title": "About this volume",
+              "path": "ydkjs/objects-classes/README.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "objects-classes-foreword",
+              "title": "Foreword",
+              "path": "ydkjs/objects-classes/foreword.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "objects-classes-ch1",
+              "title": "Chapter 1: Object Foundations",
+              "path": "ydkjs/objects-classes/ch1.md",
+              "minutes": 28,
+              "kind": "chapter",
+              "heads": [
+                "About This Book",
+                "Objects As Containers",
+                "Defining Properties",
+                "Accessing Properties",
+                "Assigning Properties",
+                "Deleting Properties",
+                "Determining Container Contents",
+                "Temporary Containers",
+                "Containers Are Collections Of Properties"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "objects-classes-ch2",
+              "title": "Chapter 2: How Objects Work",
+              "path": "ydkjs/objects-classes/ch2.md",
+              "minutes": 16,
+              "kind": "chapter",
+              "heads": [
+                "Property Descriptors",
+                "Object Sub-Types",
+                "Object Characteristics",
+                "Extending The MOP",
+                "`[[Prototype]]` Chain",
+                "Objects Behavior"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "objects-classes-ch3",
+              "title": "Chapter 3: Classy Objects",
+              "path": "ydkjs/objects-classes/ch3.md",
+              "minutes": 39,
+              "kind": "chapter",
+              "heads": [
+                "When Should I Class-Orient My Code?",
+                "Keep It `class`y",
+                "Class Instance `this`",
+                "Class Extension",
+                "Static Class Behavior",
+                "Private Class Behavior",
+                "Class Example"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "objects-classes-ch4",
+              "title": "Chapter 4: This Works",
+              "path": "ydkjs/objects-classes/ch4.md",
+              "minutes": 44,
+              "kind": "chapter",
+              "heads": [
+                "This Aware",
+                "This Is It!",
+                "An Arrow Points Somewhere",
+                "Variations",
+                "Stay Aware"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "objects-classes-ch5",
+              "title": "Chapter 5: Delegation",
+              "path": "ydkjs/objects-classes/ch5.md",
+              "minutes": 16,
+              "kind": "chapter",
+              "heads": [
+                "Preamble",
+                "What's A Constructor, Anyway?",
+                "Ditching Class Thinking",
+                "Delegation Illustrated",
+                "Composing Peer Objects",
+                "Why *This*?"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "objects-classes-thanks",
+              "title": "Thank You!",
+              "path": "ydkjs/objects-classes/thanks.md",
+              "minutes": 3,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "objects-classes-toc",
+              "title": "Table of contents",
+              "path": "ydkjs/objects-classes/toc.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [
+                "Table of Contents"
+              ],
+              "placeholder": false
+            }
+          ]
+        },
+        {
+          "id": "types-grammar",
+          "title": "Types & Grammar",
+          "status": "Rough draft",
+          "lessons": [
+            {
+              "id": "types-grammar-readme",
+              "title": "About this volume",
+              "path": "ydkjs/types-grammar/README.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "types-grammar-foreword",
+              "title": "Foreword",
+              "path": "ydkjs/types-grammar/foreword.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "types-grammar-ch1",
+              "title": "Chapter 1: Primitive Values",
+              "path": "ydkjs/types-grammar/ch1.md",
+              "minutes": 43,
+              "kind": "chapter",
+              "heads": [
+                "Value Types",
+                "Empty Values",
+                "Boolean Values",
+                "String Values",
+                "Number Values",
+                "BigInteger Values",
+                "Symbol Values",
+                "Primitives Are Built-In Types"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "types-grammar-ch2",
+              "title": "Chapter 2: Primitive Behaviors",
+              "path": "ydkjs/types-grammar/ch2.md",
+              "minutes": 39,
+              "kind": "chapter",
+              "heads": [
+                "Primitive Immutability",
+                "Primitive Assignments",
+                "String Behaviors",
+                "Number Behaviors",
+                "Primitives Are Foundational"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "types-grammar-ch3",
+              "title": "Chapter 3: Object Values",
+              "path": "ydkjs/types-grammar/ch3.md",
+              "minutes": 6,
+              "kind": "chapter",
+              "heads": [
+                "Types of Objects",
+                "Plain Objects",
+                "Fundamental Objects",
+                "Other Built-in Objects",
+                "Arrays",
+                "Regular Expressions",
+                "Functions",
+                "Proposed: Records/Tuples"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "types-grammar-ch4",
+              "title": "Chapter 4: Coercing Values",
+              "path": "ydkjs/types-grammar/ch4.md",
+              "minutes": 67,
+              "kind": "chapter",
+              "heads": [
+                "Coercion: Explicit vs Implicit",
+                "Abstracts",
+                "Concrete Coercions",
+                "Coercion Corner Cases",
+                "Type Awareness",
+                "What's Left?"
+              ],
+              "placeholder": false
+            },
+            {
+              "id": "types-grammar-thanks",
+              "title": "Thank You!",
+              "path": "ydkjs/types-grammar/thanks.md",
+              "minutes": 3,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": false
+            },
+            {
+              "id": "types-grammar-toc",
+              "title": "Table of contents",
+              "path": "ydkjs/types-grammar/toc.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [
+                "Table of Contents"
+              ],
+              "placeholder": false
+            }
+          ]
+        },
+        {
+          "id": "sync-async",
+          "title": "Sync & Async",
+          "status": "Canceled · source placeholders only",
+          "lessons": [
+            {
+              "id": "sync-async-readme",
+              "title": "About this volume",
+              "path": "ydkjs/sync-async/README.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": true
+            },
+            {
+              "id": "sync-async-foreword",
+              "title": "Foreword",
+              "path": "ydkjs/sync-async/foreword.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": true
+            },
+            {
+              "id": "sync-async-ch1",
+              "title": "Chapter 1: TODO",
+              "path": "ydkjs/sync-async/ch1.md",
+              "minutes": 1,
+              "kind": "chapter",
+              "heads": [],
+              "placeholder": true
+            },
+            {
+              "id": "sync-async-toc",
+              "title": "Table of contents",
+              "path": "ydkjs/sync-async/toc.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [
+                "Table of Contents"
+              ],
+              "placeholder": true
+            }
+          ]
+        },
+        {
+          "id": "es-next-beyond",
+          "title": "ES.Next & Beyond",
+          "status": "Canceled · source placeholders only",
+          "lessons": [
+            {
+              "id": "es-next-beyond-readme",
+              "title": "About this volume",
+              "path": "ydkjs/es-next-beyond/README.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": true
+            },
+            {
+              "id": "es-next-beyond-foreword",
+              "title": "Foreword",
+              "path": "ydkjs/es-next-beyond/foreword.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [],
+              "placeholder": true
+            },
+            {
+              "id": "es-next-beyond-ch1",
+              "title": "Chapter 1: TODO",
+              "path": "ydkjs/es-next-beyond/ch1.md",
+              "minutes": 1,
+              "kind": "chapter",
+              "heads": [],
+              "placeholder": true
+            },
+            {
+              "id": "es-next-beyond-toc",
+              "title": "Table of contents",
+              "path": "ydkjs/es-next-beyond/toc.md",
+              "minutes": 1,
+              "kind": "frontmatter",
+              "heads": [
+                "Table of Contents"
+              ],
+              "placeholder": true
+            }
+          ]
+        }
+      ],
+      "badge": "JS",
+      "shortTitle": "You Don’t Know JS",
+      "pdf": false
+    },
+    {
+      "id": "c",
+      "title": "The C Programming Language",
+      "subtitle": "A chapter-by-chapter companion to the second edition",
+      "author": "Brian W. Kernighan & Dennis M. Ritchie",
+      "language": "C",
+      "color": "blue",
+      "description": "Build a precise mental model of C, from your first program to pointers, data structures, and the Unix interface.",
+      "notice": "Original companion lessons and assessments, not the book text. Import your own PDF in the reader to read the complete book locally. Covers all eight chapters, reference appendices, and the index workflow.",
+      "source": "https://www.cs.princeton.edu/~bwk/cbook.html",
+      "sections": [
+        {
+          "id": "c-foundations",
+          "title": "Foundations",
+          "status": "Original companion",
+          "lessons": [
+            {
+              "id": "c-front",
+              "title": "Before you begin",
+              "path": "c/front.md",
+              "minutes": 2,
+              "kind": "frontmatter",
+              "heads": [
+                "How to work through the book",
+                "Edition and toolchain",
+                "A learning loop"
+              ]
+            },
+            {
+              "id": "c-ch1",
+              "title": "Chapter 1: A Tutorial Introduction",
+              "path": "c/ch1.md",
+              "minutes": 3,
+              "kind": "chapter",
+              "heads": [
+                "First programs and formatted output",
+                "Variables, arithmetic, and loops",
+                "Character input and output",
+                "Counting and state",
+                "Arrays, functions, and arguments",
+                "Strings and storage",
+                "Practice lab"
+              ]
+            },
+            {
+              "id": "c-ch2",
+              "title": "Chapter 2: Types, Operators, and Expressions",
+              "path": "c/ch2.md",
+              "minutes": 2,
+              "kind": "chapter",
+              "heads": [
+                "Names, constants, and declarations",
+                "Arithmetic, comparisons, and logic",
+                "Conversions",
+                "Increment, bit operations, and assignment",
+                "Precedence and evaluation order",
+                "Practice lab"
+              ]
+            },
+            {
+              "id": "c-ch3",
+              "title": "Chapter 3: Control Flow",
+              "path": "c/ch3.md",
+              "minutes": 2,
+              "kind": "chapter",
+              "heads": [
+                "Statements, blocks, and selection",
+                "Switch",
+                "Loops",
+                "Break, continue, and goto",
+                "Reasoning about algorithms",
+                "Practice lab"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c-abstractions",
+          "title": "Functions, pointers & data",
+          "status": "Original companion",
+          "lessons": [
+            {
+              "id": "c-ch4",
+              "title": "Chapter 4: Functions and Program Structure",
+              "path": "c/ch4.md",
+              "minutes": 2,
+              "kind": "chapter",
+              "heads": [
+                "Function contracts",
+                "Scope, linkage, and duration",
+                "External and static objects",
+                "Header organization and register",
+                "Recursion",
+                "Preprocessing",
+                "Practice lab"
+              ]
+            },
+            {
+              "id": "c-ch5",
+              "title": "Chapter 5: Pointers and Arrays",
+              "path": "c/ch5.md",
+              "minutes": 2,
+              "kind": "chapter",
+              "heads": [
+                "Addresses and indirection",
+                "Function parameters",
+                "Arrays and arithmetic",
+                "Strings and pointer arrays",
+                "Multidimensional arrays",
+                "Command-line arguments and function pointers",
+                "Practice lab"
+              ]
+            },
+            {
+              "id": "c-ch6",
+              "title": "Chapter 6: Structures",
+              "path": "c/ch6.md",
+              "minutes": 2,
+              "kind": "chapter",
+              "heads": [
+                "Group related data",
+                "Structure values and pointers",
+                "Arrays of structures and self-reference",
+                "Search trees and lookup tables",
+                "Typedef",
+                "Unions and bit-fields",
+                "Practice lab"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c-systems",
+          "title": "I/O & the Unix interface",
+          "status": "Original companion",
+          "lessons": [
+            {
+              "id": "c-ch7",
+              "title": "Chapter 7: Input and Output",
+              "path": "c/ch7.md",
+              "minutes": 2,
+              "kind": "chapter",
+              "heads": [
+                "Streams and formatted I/O",
+                "Variable arguments",
+                "Formatted input",
+                "File operations and errors",
+                "Line and character operations",
+                "Useful library tools",
+                "Practice lab"
+              ]
+            },
+            {
+              "id": "c-ch8",
+              "title": "Chapter 8: The UNIX System Interface",
+              "path": "c/ch8.md",
+              "minutes": 3,
+              "kind": "chapter",
+              "heads": [
+                "File descriptors",
+                "Reading and writing",
+                "Open, create, close, and removal",
+                "Positioning and library implementation",
+                "Directories and metadata",
+                "Allocation model",
+                "Historical examples and modern practice",
+                "Practice lab"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "c-reference",
+          "title": "Reference appendices & final review",
+          "status": "Original companion",
+          "lessons": [
+            {
+              "id": "c-apa",
+              "title": "Appendix A: Reference Manual · Study Guide",
+              "path": "c/apa.md",
+              "minutes": 2,
+              "kind": "appendix",
+              "heads": [
+                "Lexical conventions and syntax",
+                "Meaning of objects and types",
+                "Conversions and expressions",
+                "Declarations and storage",
+                "Statements, external definitions, and preprocessing",
+                "A reference lookup habit"
+              ]
+            },
+            {
+              "id": "c-apb",
+              "title": "Appendix B: Standard Library · Study Guide",
+              "path": "c/apb.md",
+              "minutes": 2,
+              "kind": "appendix",
+              "heads": [
+                "I/O and strings",
+                "Character classification and numbers",
+                "Memory and general utilities",
+                "Diagnostics and environment",
+                "Practice lab"
+              ]
+            },
+            {
+              "id": "c-apc",
+              "title": "Appendix C: Summary of Changes · Study Guide",
+              "path": "c/apc.md",
+              "minutes": 2,
+              "kind": "appendix",
+              "heads": [
+                "From early C to ANSI C",
+                "Compatibility is a question to investigate",
+                "Beyond the second edition",
+                "Index and final review",
+                "Practice lab"
+              ]
+            }
+          ]
+        }
+      ],
+      "badge": "C",
+      "shortTitle": "C Programming",
+      "pdf": true
+    },
+    {
+      "id": "beej",
+      "title": "Beej’s Guide to Network Concepts",
+      "shortTitle": "Network Concepts",
+      "badge": "NET",
+      "subtitle": "The complete guide · 43 chapters and appendices",
+      "author": "Brian “Beej Jorgensen” Hall",
+      "color": "slate",
+      "language": "Networking",
+      "description": "Learn networking through Python, protocols, and hands-on projects.",
+      "notice": "Complete, unmodified official HTML edition, version 1.11.1. © 2023 Brian “Beej Jorgensen” Hall. CC BY-NC-ND 3.0. Original quizzes are separate companion material.",
+      "source": "https://beej.us/guide/bgnet0/html/split/",
+      "license": "https://creativecommons.org/licenses/by-nc-nd/3.0/",
+      "fullText": true,
+      "sections": [
+        {
+          "id": "beej-section-1",
+          "title": "Networking foundations",
+          "status": "Chapters 1–5",
+          "lessons": [
+            {
+              "id": "beej-ch1",
+              "number": 1,
+              "title": "1 Foreword",
+              "path": "beej/foreword.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 4,
+              "heads": [
+                "1.1 Audience",
+                "1.2 Official Homepage",
+                "1.3 Email Policy",
+                "1.4 Mirroring",
+                "1.5 Note for Translators",
+                "1.6 Copyright and Distribution",
+                "1.7 Dedication"
+              ],
+              "outline": [
+                {
+                  "title": "1.1 Audience",
+                  "anchor": "audience"
+                },
+                {
+                  "title": "1.2 Official Homepage",
+                  "anchor": "official-homepage"
+                },
+                {
+                  "title": "1.3 Email Policy",
+                  "anchor": "email-policy"
+                },
+                {
+                  "title": "1.4 Mirroring",
+                  "anchor": "mirroring"
+                },
+                {
+                  "title": "1.5 Note for Translators",
+                  "anchor": "note-for-translators"
+                },
+                {
+                  "title": "1.6 Copyright and Distribution",
+                  "anchor": "copyright-and-distribution"
+                },
+                {
+                  "title": "1.7 Dedication",
+                  "anchor": "dedication"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch2",
+              "number": 2,
+              "title": "2 Networking Overview",
+              "path": "beej/networking-overview.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 10,
+              "heads": [
+                "2.1 Circuit Switched",
+                "2.2 Packet Switched",
+                "2.3 Client/Server Architecture",
+                "2.4 The OS, Network Programming, and Sockets",
+                "2.5 Protocols",
+                "2.6 Network Layers and Abstraction",
+                "2.7 Wired versus Wireless",
+                "2.8 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "2.1 Circuit Switched",
+                  "anchor": "circuit-switched"
+                },
+                {
+                  "title": "2.2 Packet Switched",
+                  "anchor": "packet-switched"
+                },
+                {
+                  "title": "2.3 Client/Server Architecture",
+                  "anchor": "clientserver-architecture"
+                },
+                {
+                  "title": "2.4 The OS, Network Programming, and Sockets",
+                  "anchor": "the-os-network-programming-and-sockets"
+                },
+                {
+                  "title": "2.5 Protocols",
+                  "anchor": "protocols"
+                },
+                {
+                  "title": "2.6 Network Layers and Abstraction",
+                  "anchor": "network-layers-and-abstraction"
+                },
+                {
+                  "title": "2.7 Wired versus Wireless",
+                  "anchor": "wired-versus-wireless"
+                },
+                {
+                  "title": "2.8 Reflect",
+                  "anchor": "reflect"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch3",
+              "number": 3,
+              "title": "3 Introducing The Sockets API",
+              "path": "beej/introducing-the-sockets-api.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 6,
+              "heads": [
+                "3.1 Client Connection Process",
+                "3.2 Server Listening Process",
+                "3.3 Client API Code",
+                "3.4 Server API Code",
+                "3.5 Reflect",
+                "3.6 Resources"
+              ],
+              "outline": [
+                {
+                  "title": "3.1 Client Connection Process",
+                  "anchor": "client-connection-process"
+                },
+                {
+                  "title": "3.2 Server Listening Process",
+                  "anchor": "server-listening-process"
+                },
+                {
+                  "title": "3.3 Client API Code",
+                  "anchor": "client-api-code"
+                },
+                {
+                  "title": "3.4 Server API Code",
+                  "anchor": "server-api-code"
+                },
+                {
+                  "title": "3.5 Reflect",
+                  "anchor": "reflect-1"
+                },
+                {
+                  "title": "3.6 Resources",
+                  "anchor": "resources"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch4",
+              "number": 4,
+              "title": "4 The Layered Network Model",
+              "path": "beej/the-layered-network-model.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 11,
+              "heads": [
+                "4.1 The Layered Network Model",
+                "4.2 An Example of Layering of Protocols on Data",
+                "4.3 The Internet Layer Model",
+                "4.4 The ISO OSI Network Layer Model",
+                "4.5 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "4.1 The Layered Network Model",
+                  "anchor": "the-layered-network-model-1"
+                },
+                {
+                  "title": "4.2 An Example of Layering of Protocols on Data",
+                  "anchor": "an-example-of-layering-of-protocols-on-data"
+                },
+                {
+                  "title": "4.3 The Internet Layer Model",
+                  "anchor": "the-internet-layer-model"
+                },
+                {
+                  "title": "4.4 The ISO OSI Network Layer Model",
+                  "anchor": "the-iso-osi-network-layer-model"
+                },
+                {
+                  "title": "4.5 Reflect",
+                  "anchor": "reflect-2"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch5",
+              "number": 5,
+              "title": "5 Project: HTTP Client and Server",
+              "path": "beej/project-http-client-and-server.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 12,
+              "heads": [
+                "5.1 Restrictions",
+                "5.2 Python Character Encoding",
+                "5.3 HTTP Summary",
+                "5.4 The Client",
+                "5.5 The Server",
+                "5.6 Hints and Help",
+                "5.7 Extensions"
+              ],
+              "outline": [
+                {
+                  "title": "5.1 Restrictions",
+                  "anchor": "restrictions"
+                },
+                {
+                  "title": "5.2 Python Character Encoding",
+                  "anchor": "python-character-encoding"
+                },
+                {
+                  "title": "5.3 HTTP Summary",
+                  "anchor": "http-summary"
+                },
+                {
+                  "title": "5.4 The Client",
+                  "anchor": "the-client"
+                },
+                {
+                  "title": "5.5 The Server",
+                  "anchor": "the-server"
+                },
+                {
+                  "title": "5.6 Hints and Help",
+                  "anchor": "hints-and-help"
+                },
+                {
+                  "title": "5.7 Extensions",
+                  "anchor": "extensions"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "beej-section-2",
+          "title": "IP and web servers",
+          "status": "Chapters 6–9",
+          "lessons": [
+            {
+              "id": "beej-ch6",
+              "number": 6,
+              "title": "6 The Internet Protocol (IP)",
+              "path": "beej/the-internet-protocol-ip.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 5,
+              "heads": [
+                "6.1 Terminology",
+                "6.2 Two Common Versions",
+                "6.3 Subnets",
+                "6.4 Additional IP-layer Protocols",
+                "6.5 Private Networks",
+                "6.6 Static versus Dynamic IP Addresses, and DHCP",
+                "6.7 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "6.1 Terminology",
+                  "anchor": "terminology"
+                },
+                {
+                  "title": "6.2 Two Common Versions",
+                  "anchor": "two-common-versions"
+                },
+                {
+                  "title": "6.3 Subnets",
+                  "anchor": "subnets"
+                },
+                {
+                  "title": "6.4 Additional IP-layer Protocols",
+                  "anchor": "additional-ip-layer-protocols"
+                },
+                {
+                  "title": "6.5 Private Networks",
+                  "anchor": "private-networks"
+                },
+                {
+                  "title": "6.6 Static versus Dynamic IP Addresses, and DHCP",
+                  "anchor": "static-versus-dynamic-ip-addresses-and-dhcp"
+                },
+                {
+                  "title": "6.7 Reflect",
+                  "anchor": "reflect-3"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch7",
+              "number": 7,
+              "title": "7 The Internet Protocol version 4",
+              "path": "beej/the-internet-protocol-version-4.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 7,
+              "heads": [
+                "7.1 IP Addresses",
+                "7.2 Subnets",
+                "7.3 Subnet Masks",
+                "7.4 Historic Subnets",
+                "7.5 Special Addresses",
+                "7.6 Special Subnets",
+                "7.7 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "7.1 IP Addresses",
+                  "anchor": "ip-addresses"
+                },
+                {
+                  "title": "7.2 Subnets",
+                  "anchor": "subnets-1"
+                },
+                {
+                  "title": "7.3 Subnet Masks",
+                  "anchor": "subnet-masks"
+                },
+                {
+                  "title": "7.4 Historic Subnets",
+                  "anchor": "historic-subnets"
+                },
+                {
+                  "title": "7.5 Special Addresses",
+                  "anchor": "special-addresses"
+                },
+                {
+                  "title": "7.6 Special Subnets",
+                  "anchor": "special-subnets"
+                },
+                {
+                  "title": "7.7 Reflect",
+                  "anchor": "reflect-4"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch8",
+              "number": 8,
+              "title": "8 The Internet Protocol version 6",
+              "path": "beej/the-internet-protocol-version-6.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 5,
+              "heads": [
+                "8.1 Representation",
+                "8.2 Link-Local Addresses",
+                "8.3 Special IPv6 Addresses and Subnets",
+                "8.4 IPv6 and DNS",
+                "8.5 IPv6 and URLs",
+                "8.6 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "8.1 Representation",
+                  "anchor": "representation"
+                },
+                {
+                  "title": "8.2 Link-Local Addresses",
+                  "anchor": "link-local-addresses"
+                },
+                {
+                  "title": "8.3 Special IPv6 Addresses and Subnets",
+                  "anchor": "special-ipv6-addresses-and-subnets"
+                },
+                {
+                  "title": "8.4 IPv6 and DNS",
+                  "anchor": "ipv6-and-dns"
+                },
+                {
+                  "title": "8.5 IPv6 and URLs",
+                  "anchor": "ipv6-and-urls"
+                },
+                {
+                  "title": "8.6 Reflect",
+                  "anchor": "reflect-5"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch9",
+              "number": 9,
+              "title": "9 Project: A Better Web Server",
+              "path": "beej/project-a-better-web-server.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 9,
+              "heads": [
+                "9.1 Restrictions",
+                "9.2 Running the Server",
+                "9.3 The Process",
+                "9.4 Parsing the Request Header",
+                "9.5 Stripping the Path down to the Filename",
+                "9.6 MIME and Getting the Content-Type",
+                "9.7 Reading the File, Content-Length, and Handling Not Found",
+                "9.8 Extensions",
+                "9.9 Example Files"
+              ],
+              "outline": [
+                {
+                  "title": "9.1 Restrictions",
+                  "anchor": "restrictions-1"
+                },
+                {
+                  "title": "9.2 Running the Server",
+                  "anchor": "running-the-server"
+                },
+                {
+                  "title": "9.3 The Process",
+                  "anchor": "the-process"
+                },
+                {
+                  "title": "9.4 Parsing the Request Header",
+                  "anchor": "parsing-the-request-header"
+                },
+                {
+                  "title": "9.5 Stripping the Path down to the Filename",
+                  "anchor": "stripping-the-path-down-to-the-filename"
+                },
+                {
+                  "title": "9.6 MIME and Getting the Content-Type",
+                  "anchor": "mime-and-getting-the-content-type"
+                },
+                {
+                  "title": "9.7 Reading the File, Content-Length, and Handling Not Found",
+                  "anchor": "reading-the-file-content-length-and-handling-not-found"
+                },
+                {
+                  "title": "9.8 Extensions",
+                  "anchor": "extensions-1"
+                },
+                {
+                  "title": "9.9 Example Files",
+                  "anchor": "example-files"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "beej-section-3",
+          "title": "Bytes and packet parsing",
+          "status": "Chapters 10–13",
+          "lessons": [
+            {
+              "id": "beej-ch10",
+              "number": 10,
+              "title": "10 Endianness and Integers",
+              "path": "beej/endianness-and-integers.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 9,
+              "heads": [
+                "10.1 Integer Representations",
+                "10.2 Endianness",
+                "10.3 Python and Endianness",
+                "10.4 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "10.1 Integer Representations",
+                  "anchor": "integer-representations"
+                },
+                {
+                  "title": "10.2 Endianness",
+                  "anchor": "endianness"
+                },
+                {
+                  "title": "10.3 Python and Endianness",
+                  "anchor": "python-and-endianness"
+                },
+                {
+                  "title": "10.4 Reflect",
+                  "anchor": "reflect-6"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch11",
+              "number": 11,
+              "title": "11 Parsing Packets",
+              "path": "beej/parsing-packets.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 6,
+              "heads": [
+                "11.1 You Know What Would Make This Easy?",
+                "11.2 Processing a Stream into Packets",
+                "11.3 The Sentences Example Again",
+                "11.4 The Grand Scheme",
+                "11.5 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "11.1 You Know What Would Make This Easy?",
+                  "anchor": "you-know-what-would-make-this-easy"
+                },
+                {
+                  "title": "11.2 Processing a Stream into Packets",
+                  "anchor": "processing-a-stream-into-packets"
+                },
+                {
+                  "title": "11.3 The Sentences Example Again",
+                  "anchor": "the-sentences-example-again"
+                },
+                {
+                  "title": "11.4 The Grand Scheme",
+                  "anchor": "the-grand-scheme"
+                },
+                {
+                  "title": "11.5 Reflect",
+                  "anchor": "reflect-7"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch12",
+              "number": 12,
+              "title": "12 Project: Atomic Time",
+              "path": "beej/project-atomic-time.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 5,
+              "heads": [
+                "12.1 Note On Legality",
+                "12.2 Note On Allowable Use",
+                "12.3 Epoch",
+                "12.4 A Dire Warning about Zeros",
+                "12.5 The Gameplan"
+              ],
+              "outline": [
+                {
+                  "title": "12.1 Note On Legality",
+                  "anchor": "note-on-legality"
+                },
+                {
+                  "title": "12.2 Note On Allowable Use",
+                  "anchor": "note-on-allowable-use"
+                },
+                {
+                  "title": "12.3 Epoch",
+                  "anchor": "epoch"
+                },
+                {
+                  "title": "12.4 A Dire Warning about Zeros",
+                  "anchor": "a-dire-warning-about-zeros"
+                },
+                {
+                  "title": "12.5 The Gameplan",
+                  "anchor": "the-gameplan"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch13",
+              "number": 13,
+              "title": "13 Project: The Word Server",
+              "path": "beej/project-the-word-server.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 4,
+              "heads": [
+                "13.1 Overview",
+                "13.2 What is a “Word Packet”?",
+                "13.3 Implementation: get_next_word_packet()",
+                "13.4 Implementation: extract_word()"
+              ],
+              "outline": [
+                {
+                  "title": "13.1 Overview",
+                  "anchor": "overview"
+                },
+                {
+                  "title": "13.2 What is a “Word Packet”?",
+                  "anchor": "what-is-a-word-packet"
+                },
+                {
+                  "title": "13.3 Implementation: get_next_word_packet()",
+                  "anchor": "implementation-get_next_word_packet"
+                },
+                {
+                  "title": "13.4 Implementation: extract_word()",
+                  "anchor": "implementation-extract_word"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "beej-section-4",
+          "title": "Transport protocols",
+          "status": "Chapters 14–16",
+          "lessons": [
+            {
+              "id": "beej-ch14",
+              "number": 14,
+              "title": "14 Transmission Control Protocol (TCP)",
+              "path": "beej/transmission-control-protocol-tcp.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 11,
+              "heads": [
+                "14.1 Goals of TCP",
+                "14.2 Location in the Network Stack",
+                "14.3 TCP Ports",
+                "14.4 TCP Overview",
+                "14.5 Data Integrity",
+                "14.6 Flow Control",
+                "14.7 Congestion Control",
+                "14.8 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "14.1 Goals of TCP",
+                  "anchor": "goals-of-tcp"
+                },
+                {
+                  "title": "14.2 Location in the Network Stack",
+                  "anchor": "location-in-the-network-stack"
+                },
+                {
+                  "title": "14.3 TCP Ports",
+                  "anchor": "tcp-ports"
+                },
+                {
+                  "title": "14.4 TCP Overview",
+                  "anchor": "tcp-overview"
+                },
+                {
+                  "title": "14.5 Data Integrity",
+                  "anchor": "data-integrity"
+                },
+                {
+                  "title": "14.6 Flow Control",
+                  "anchor": "flow-control"
+                },
+                {
+                  "title": "14.7 Congestion Control",
+                  "anchor": "congestion-control"
+                },
+                {
+                  "title": "14.8 Reflect",
+                  "anchor": "reflect-8"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch15",
+              "number": 15,
+              "title": "15 User Datagram Protocol (UDP)",
+              "path": "beej/user-datagram-protocol-udp.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 8,
+              "heads": [
+                "15.1 Goals of UDP",
+                "15.2 Location in the Network Stack",
+                "15.3 UDP Ports",
+                "15.4 UDP Overview",
+                "15.5 Data Integrity",
+                "15.6 Maximum Payload Without Fragmentation",
+                "15.7 What’s the Use?",
+                "15.8 UDP (Datagram) Sockets",
+                "15.9 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "15.1 Goals of UDP",
+                  "anchor": "goals-of-udp"
+                },
+                {
+                  "title": "15.2 Location in the Network Stack",
+                  "anchor": "location-in-the-network-stack-1"
+                },
+                {
+                  "title": "15.3 UDP Ports",
+                  "anchor": "udp-ports"
+                },
+                {
+                  "title": "15.4 UDP Overview",
+                  "anchor": "udp-overview"
+                },
+                {
+                  "title": "15.5 Data Integrity",
+                  "anchor": "data-integrity-1"
+                },
+                {
+                  "title": "15.6 Maximum Payload Without Fragmentation",
+                  "anchor": "maximum-payload-without-fragmentation"
+                },
+                {
+                  "title": "15.7 What’s the Use?",
+                  "anchor": "whats-the-use"
+                },
+                {
+                  "title": "15.8 UDP (Datagram) Sockets",
+                  "anchor": "udp-datagram-sockets"
+                },
+                {
+                  "title": "15.9 Reflect",
+                  "anchor": "reflect-9"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch16",
+              "number": 16,
+              "title": "16 Project: Validating a TCP Packet",
+              "path": "beej/project-validating-a-tcp-packet.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 13,
+              "heads": [
+                "16.1 Banned Functions",
+                "16.2 How To Code This",
+                "16.3 Checksum in General",
+                "16.4 Input File Details",
+                "16.5 How On Earth Do You Compute A TCP Checksum?",
+                "16.6 The IP Pseudo Header",
+                "16.7 The TCP Header Checksum",
+                "16.8 Actually Computing the Checksum",
+                "16.9 Final Comparison",
+                "16.10 Output",
+                "16.11 Success"
+              ],
+              "outline": [
+                {
+                  "title": "16.1 Banned Functions",
+                  "anchor": "banned-functions"
+                },
+                {
+                  "title": "16.2 How To Code This",
+                  "anchor": "how-to-code-this"
+                },
+                {
+                  "title": "16.3 Checksum in General",
+                  "anchor": "checksum-in-general"
+                },
+                {
+                  "title": "16.4 Input File Details",
+                  "anchor": "input-file-details"
+                },
+                {
+                  "title": "16.5 How On Earth Do You Compute A TCP Checksum?",
+                  "anchor": "how-on-earth-do-you-compute-a-tcp-checksum"
+                },
+                {
+                  "title": "16.6 The IP Pseudo Header",
+                  "anchor": "the-ip-pseudo-header"
+                },
+                {
+                  "title": "16.7 The TCP Header Checksum",
+                  "anchor": "the-tcp-header-checksum"
+                },
+                {
+                  "title": "16.8 Actually Computing the Checksum",
+                  "anchor": "actually-computing-the-checksum"
+                },
+                {
+                  "title": "16.9 Final Comparison",
+                  "anchor": "final-comparison"
+                },
+                {
+                  "title": "16.10 Output",
+                  "anchor": "output"
+                },
+                {
+                  "title": "16.11 Success",
+                  "anchor": "success"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "beej-section-5",
+          "title": "Subnets, routing, and Ethernet",
+          "status": "Chapters 17–23",
+          "lessons": [
+            {
+              "id": "beej-ch17",
+              "number": 17,
+              "title": "17 IP Subnets and Subnet Masks",
+              "path": "beej/ip-subnets-and-subnet-masks.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 10,
+              "heads": [
+                "17.1 Address Representation",
+                "17.2 Converting from Dots-and-Numbers",
+                "17.3 Converting to Dots-and-Numbers",
+                "17.4 Subnet and Host Refresher",
+                "17.5 Subnet Mask Refresher",
+                "17.6 Computing the Subnet Mask from Slash Notation",
+                "17.7 Finding the Subnet for an IP address",
+                "17.8 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "17.1 Address Representation",
+                  "anchor": "address-representation"
+                },
+                {
+                  "title": "17.2 Converting from Dots-and-Numbers",
+                  "anchor": "converting-from-dots-and-numbers"
+                },
+                {
+                  "title": "17.3 Converting to Dots-and-Numbers",
+                  "anchor": "converting-to-dots-and-numbers"
+                },
+                {
+                  "title": "17.4 Subnet and Host Refresher",
+                  "anchor": "subnet-and-host-refresher"
+                },
+                {
+                  "title": "17.5 Subnet Mask Refresher",
+                  "anchor": "subnet-mask-refresher"
+                },
+                {
+                  "title": "17.6 Computing the Subnet Mask from Slash Notation",
+                  "anchor": "computing-the-subnet-mask-from-slash-notation"
+                },
+                {
+                  "title": "17.7 Finding the Subnet for an IP address",
+                  "anchor": "finding-the-subnet-for-an-ip-address"
+                },
+                {
+                  "title": "17.8 Reflect",
+                  "anchor": "reflect-10"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch18",
+              "number": 18,
+              "title": "18 IP Routing",
+              "path": "beej/ip-routing.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 10,
+              "heads": [
+                "18.1 Routing Protocols",
+                "18.2 Routing tables",
+                "18.3 Routing Algorithm",
+                "18.4 Routing Example",
+                "18.5 Routing Loops and Time-To-Live",
+                "18.6 The Broadcast Address",
+                "18.7 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "18.1 Routing Protocols",
+                  "anchor": "routing-protocols"
+                },
+                {
+                  "title": "18.2 Routing tables",
+                  "anchor": "routing-tables"
+                },
+                {
+                  "title": "18.3 Routing Algorithm",
+                  "anchor": "routing-algorithm"
+                },
+                {
+                  "title": "18.4 Routing Example",
+                  "anchor": "routing-example"
+                },
+                {
+                  "title": "18.5 Routing Loops and Time-To-Live",
+                  "anchor": "routing-loops-and-time-to-live"
+                },
+                {
+                  "title": "18.6 The Broadcast Address",
+                  "anchor": "the-broadcast-address"
+                },
+                {
+                  "title": "18.7 Reflect",
+                  "anchor": "reflect-11"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch19",
+              "number": 19,
+              "title": "19 Project: Computing and Finding Subnets",
+              "path": "beej/project-computing-and-finding-subnets.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 3,
+              "heads": [
+                "19.1 Restrictions",
+                "19.2 What To Do",
+                "19.3 Testing as you Go",
+                "19.4 Running the Program"
+              ],
+              "outline": [
+                {
+                  "title": "19.1 Restrictions",
+                  "anchor": "restrictions-2"
+                },
+                {
+                  "title": "19.2 What To Do",
+                  "anchor": "what-to-do"
+                },
+                {
+                  "title": "19.3 Testing as you Go",
+                  "anchor": "testing-as-you-go"
+                },
+                {
+                  "title": "19.4 Running the Program",
+                  "anchor": "running-the-program"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch20",
+              "number": 20,
+              "title": "20 The Link Layer and Ethernet",
+              "path": "beej/the-link-layer-and-ethernet.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 9,
+              "heads": [
+                "20.1 A Quick Note on Octets",
+                "20.2 Frames versus Packets",
+                "20.3 MAC Addresses",
+                "20.4 We’re All In The Same Room (Typically)",
+                "20.5 Multiple Access Method",
+                "20.6 Ethernet",
+                "20.7 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "20.1 A Quick Note on Octets",
+                  "anchor": "a-quick-note-on-octets"
+                },
+                {
+                  "title": "20.2 Frames versus Packets",
+                  "anchor": "frames-versus-packets"
+                },
+                {
+                  "title": "20.3 MAC Addresses",
+                  "anchor": "mac-addresses"
+                },
+                {
+                  "title": "20.4 We’re All In The Same Room (Typically)",
+                  "anchor": "were-all-in-the-same-room-typically"
+                },
+                {
+                  "title": "20.5 Multiple Access Method",
+                  "anchor": "multiple-access-method"
+                },
+                {
+                  "title": "20.6 Ethernet",
+                  "anchor": "ethernet"
+                },
+                {
+                  "title": "20.7 Reflect",
+                  "anchor": "reflect-12"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch21",
+              "number": 21,
+              "title": "21 ARP: The Address Resolution Protocol",
+              "path": "beej/arp-the-address-resolution-protocol.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 6,
+              "heads": [
+                "21.1 Ethernet Broadcast Frames",
+                "21.2 ARP–The Address Resolution Protocol",
+                "21.3 ARP Caching",
+                "21.4 ARP Structure",
+                "21.5 ARP Request/Response",
+                "21.6 Other ARP Features",
+                "21.7 IPv6 and ARP",
+                "21.8 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "21.1 Ethernet Broadcast Frames",
+                  "anchor": "ethernet-broadcast-frames"
+                },
+                {
+                  "title": "21.2 ARP–The Address Resolution Protocol",
+                  "anchor": "arpthe-address-resolution-protocol"
+                },
+                {
+                  "title": "21.3 ARP Caching",
+                  "anchor": "arp-caching"
+                },
+                {
+                  "title": "21.4 ARP Structure",
+                  "anchor": "arp-structure"
+                },
+                {
+                  "title": "21.5 ARP Request/Response",
+                  "anchor": "arp-requestresponse"
+                },
+                {
+                  "title": "21.6 Other ARP Features",
+                  "anchor": "other-arp-features"
+                },
+                {
+                  "title": "21.7 IPv6 and ARP",
+                  "anchor": "ipv6-and-arp"
+                },
+                {
+                  "title": "21.8 Reflect",
+                  "anchor": "reflect-13"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch22",
+              "number": 22,
+              "title": "22 Project 6: Routing with Dijkstra’s",
+              "path": "beej/project-6-routing-with-dijkstras.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 9,
+              "heads": [
+                "22.1 Banned Functions",
+                "22.2 Graphs Refresher",
+                "22.3 Dijkstra’s Algorithm Overview",
+                "22.4 Dijkstra’s Implementation",
+                "22.5 What About Our Project?",
+                "22.6 Input File and Example Output",
+                "22.7 Hints"
+              ],
+              "outline": [
+                {
+                  "title": "22.1 Banned Functions",
+                  "anchor": "banned-functions-1"
+                },
+                {
+                  "title": "22.2 Graphs Refresher",
+                  "anchor": "graphs-refresher"
+                },
+                {
+                  "title": "22.3 Dijkstra’s Algorithm Overview",
+                  "anchor": "dijkstras-algorithm-overview"
+                },
+                {
+                  "title": "22.4 Dijkstra’s Implementation",
+                  "anchor": "dijkstras-implementation"
+                },
+                {
+                  "title": "22.5 What About Our Project?",
+                  "anchor": "what-about-our-project"
+                },
+                {
+                  "title": "22.6 Input File and Example Output",
+                  "anchor": "input-file-and-example-output"
+                },
+                {
+                  "title": "22.7 Hints",
+                  "anchor": "hints"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch23",
+              "number": 23,
+              "title": "23 Project: Sniff ARP packets with WireShark",
+              "path": "beej/project-sniff-arp-packets-with-wireshark.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 4,
+              "heads": [
+                "23.1 What to Create",
+                "23.2 Step by Step"
+              ],
+              "outline": [
+                {
+                  "title": "23.1 What to Create",
+                  "anchor": "what-to-create"
+                },
+                {
+                  "title": "23.2 Step by Step",
+                  "anchor": "step-by-step"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "beej-section-6",
+          "title": "Hardware and Packet Tracer",
+          "status": "Chapters 24–28",
+          "lessons": [
+            {
+              "id": "beej-ch24",
+              "number": 24,
+              "title": "24 Network Hardware",
+              "path": "beej/network-hardware.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 9,
+              "heads": [
+                "24.1 Terminology and Components",
+                "24.2 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "24.1 Terminology and Components",
+                  "anchor": "terminology-and-components"
+                },
+                {
+                  "title": "24.2 Reflect",
+                  "anchor": "reflect-14"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch25",
+              "number": 25,
+              "title": "25 Project: Packet Tracer: Connect Two Computers",
+              "path": "beej/project-packet-tracer-connect-two-computers.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 2,
+              "heads": [
+                "25.1 Adding Computers to the LAN",
+                "25.2 Wiring PCs Directly Together",
+                "25.3 Setting Up the IP Network",
+                "25.4 Pinging Across the Network",
+                "25.5 Saving the Project"
+              ],
+              "outline": [
+                {
+                  "title": "25.1 Adding Computers to the LAN",
+                  "anchor": "adding-computers-to-the-lan"
+                },
+                {
+                  "title": "25.2 Wiring PCs Directly Together",
+                  "anchor": "wiring-pcs-directly-together"
+                },
+                {
+                  "title": "25.3 Setting Up the IP Network",
+                  "anchor": "setting-up-the-ip-network"
+                },
+                {
+                  "title": "25.4 Pinging Across the Network",
+                  "anchor": "pinging-across-the-network"
+                },
+                {
+                  "title": "25.5 Saving the Project",
+                  "anchor": "saving-the-project"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch26",
+              "number": 26,
+              "title": "26 Project: Packet Tracer: Using a Switch",
+              "path": "beej/project-packet-tracer-using-a-switch.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 2,
+              "heads": [
+                "26.1 Add Some PCs",
+                "26.2 Add a Switch",
+                "26.3 Wire It Up",
+                "26.4 Test Pings!"
+              ],
+              "outline": [
+                {
+                  "title": "26.1 Add Some PCs",
+                  "anchor": "add-some-pcs"
+                },
+                {
+                  "title": "26.2 Add a Switch",
+                  "anchor": "add-a-switch"
+                },
+                {
+                  "title": "26.3 Wire It Up",
+                  "anchor": "wire-it-up"
+                },
+                {
+                  "title": "26.4 Test Pings!",
+                  "anchor": "test-pings"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch27",
+              "number": 27,
+              "title": "27 Project: Packet Tracer: Using a Router",
+              "path": "beej/project-packet-tracer-using-a-router.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 3,
+              "heads": [
+                "27.1 Build the LANs",
+                "27.2 Adding a Router",
+                "27.3 Adding a Default Route",
+                "27.4 Try It Out!"
+              ],
+              "outline": [
+                {
+                  "title": "27.1 Build the LANs",
+                  "anchor": "build-the-lans"
+                },
+                {
+                  "title": "27.2 Adding a Router",
+                  "anchor": "adding-a-router"
+                },
+                {
+                  "title": "27.3 Adding a Default Route",
+                  "anchor": "adding-a-default-route"
+                },
+                {
+                  "title": "27.4 Try It Out!",
+                  "anchor": "try-it-out"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch28",
+              "number": 28,
+              "title": "28 Project: Packet Tracer: Multiple Routers",
+              "path": "beej/project-packet-tracer-multiple-routers.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 6,
+              "heads": [
+                "28.1 What We’re Building",
+                "28.2 Drag Out the Components",
+                "28.3 Setting Up the Middle Router",
+                "28.4 Set up the Three LAN Subnets",
+                "28.5 Set the Default Gateway on All PCs",
+                "28.6 Setting Up the Router Subnets",
+                "28.7 Setting Up the Routing Tables",
+                "28.8 Test It Out!"
+              ],
+              "outline": [
+                {
+                  "title": "28.1 What We’re Building",
+                  "anchor": "what-were-building"
+                },
+                {
+                  "title": "28.2 Drag Out the Components",
+                  "anchor": "drag-out-the-components"
+                },
+                {
+                  "title": "28.3 Setting Up the Middle Router",
+                  "anchor": "setting-up-the-middle-router"
+                },
+                {
+                  "title": "28.4 Set up the Three LAN Subnets",
+                  "anchor": "set-up-the-three-lan-subnets"
+                },
+                {
+                  "title": "28.5 Set the Default Gateway on All PCs",
+                  "anchor": "set-the-default-gateway-on-all-pcs"
+                },
+                {
+                  "title": "28.6 Setting Up the Router Subnets",
+                  "anchor": "setting-up-the-router-subnets"
+                },
+                {
+                  "title": "28.7 Setting Up the Routing Tables",
+                  "anchor": "setting-up-the-routing-tables"
+                },
+                {
+                  "title": "28.8 Test It Out!",
+                  "anchor": "test-it-out"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "beej-section-7",
+          "title": "Multiplexing and network services",
+          "status": "Chapters 29–34",
+          "lessons": [
+            {
+              "id": "beej-ch29",
+              "number": 29,
+              "title": "29 Select",
+              "path": "beej/select.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 5,
+              "heads": [
+                "29.1 The Problem We’re Solving",
+                "29.2 Using select()",
+                "29.3 Using select() with Listening Sockets",
+                "29.4 The Main Algorithm",
+                "29.5 What About Those Other Arguments to select()?",
+                "29.6 Using select() with send()",
+                "29.7 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "29.1 The Problem We’re Solving",
+                  "anchor": "the-problem-were-solving"
+                },
+                {
+                  "title": "29.2 Using select()",
+                  "anchor": "using-select"
+                },
+                {
+                  "title": "29.3 Using select() with Listening Sockets",
+                  "anchor": "using-select-with-listening-sockets"
+                },
+                {
+                  "title": "29.4 The Main Algorithm",
+                  "anchor": "the-main-algorithm"
+                },
+                {
+                  "title": "29.5 What About Those Other Arguments to select()?",
+                  "anchor": "what-about-those-other-arguments-to-select"
+                },
+                {
+                  "title": "29.6 Using select() with send()",
+                  "anchor": "using-select-with-send"
+                },
+                {
+                  "title": "29.7 Reflect",
+                  "anchor": "reflect-15"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch30",
+              "number": 30,
+              "title": "30 Project: Using Select",
+              "path": "beej/project-using-select.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 2,
+              "heads": [
+                "30.1 Demo Code",
+                "30.2 Features to Add",
+                "30.3 Example Run"
+              ],
+              "outline": [
+                {
+                  "title": "30.1 Demo Code",
+                  "anchor": "demo-code"
+                },
+                {
+                  "title": "30.2 Features to Add",
+                  "anchor": "features-to-add"
+                },
+                {
+                  "title": "30.3 Example Run",
+                  "anchor": "example-run"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch31",
+              "number": 31,
+              "title": "31 Domain Name System (DNS)",
+              "path": "beej/domain-name-system-dns.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 10,
+              "heads": [
+                "31.1 Typical Usage",
+                "31.2 Domains and IP Addresses",
+                "31.3 (Domain) Name Servers",
+                "31.4 Root Name Servers",
+                "31.5 Example Run",
+                "31.6 Zones",
+                "31.7 Resolver Library",
+                "31.8 Caching Servers",
+                "31.9 Record Types",
+                "31.10 Dynamic DNS",
+                "31.11 Reverse DNS",
+                "31.12 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "31.1 Typical Usage",
+                  "anchor": "typical-usage"
+                },
+                {
+                  "title": "31.2 Domains and IP Addresses",
+                  "anchor": "domains-and-ip-addresses"
+                },
+                {
+                  "title": "31.3 (Domain) Name Servers",
+                  "anchor": "domain-name-servers"
+                },
+                {
+                  "title": "31.4 Root Name Servers",
+                  "anchor": "root-name-servers"
+                },
+                {
+                  "title": "31.5 Example Run",
+                  "anchor": "example-run-1"
+                },
+                {
+                  "title": "31.6 Zones",
+                  "anchor": "zones"
+                },
+                {
+                  "title": "31.7 Resolver Library",
+                  "anchor": "resolver-library"
+                },
+                {
+                  "title": "31.8 Caching Servers",
+                  "anchor": "caching-servers"
+                },
+                {
+                  "title": "31.9 Record Types",
+                  "anchor": "record-types"
+                },
+                {
+                  "title": "31.10 Dynamic DNS",
+                  "anchor": "dynamic-dns"
+                },
+                {
+                  "title": "31.11 Reverse DNS",
+                  "anchor": "reverse-dns"
+                },
+                {
+                  "title": "31.12 Reflect",
+                  "anchor": "reflect-16"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch32",
+              "number": 32,
+              "title": "32 Network Address Translation (NAT)",
+              "path": "beej/network-address-translation-nat.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 8,
+              "heads": [
+                "32.1 A Snail-Mail Analogy",
+                "32.2 Why?",
+                "32.3 Private Networks",
+                "32.4 How it Works",
+                "32.5 NAT and IPv6",
+                "32.6 Port Forwarding",
+                "32.7 Review"
+              ],
+              "outline": [
+                {
+                  "title": "32.1 A Snail-Mail Analogy",
+                  "anchor": "a-snail-mail-analogy"
+                },
+                {
+                  "title": "32.2 Why?",
+                  "anchor": "why"
+                },
+                {
+                  "title": "32.3 Private Networks",
+                  "anchor": "private-networks-1"
+                },
+                {
+                  "title": "32.4 How it Works",
+                  "anchor": "how-it-works"
+                },
+                {
+                  "title": "32.5 NAT and IPv6",
+                  "anchor": "nat-and-ipv6"
+                },
+                {
+                  "title": "32.6 Port Forwarding",
+                  "anchor": "port-forwarding"
+                },
+                {
+                  "title": "32.7 Review",
+                  "anchor": "review"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch33",
+              "number": 33,
+              "title": "33 Dynamic Host Configuration Protocol (DHCP)",
+              "path": "beej/dynamic-host-configuration-protocol-dhcp.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 2,
+              "heads": [
+                "33.1 Operation",
+                "33.2 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "33.1 Operation",
+                  "anchor": "operation"
+                },
+                {
+                  "title": "33.2 Reflect",
+                  "anchor": "reflect-17"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch34",
+              "number": 34,
+              "title": "34 Project: Digging DNS Info",
+              "path": "beej/project-digging-dns-info.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 4,
+              "heads": [
+                "34.1 Installation",
+                "34.2 Try it Out",
+                "34.3 Time To Live (TTL)",
+                "34.4 Authoritative Servers",
+                "34.5 Getting the Root Name Servers",
+                "34.6 Digging at a Specific Name Server",
+                "34.7 Digging at a Root Name Server",
+                "34.8 What to Do"
+              ],
+              "outline": [
+                {
+                  "title": "34.1 Installation",
+                  "anchor": "installation"
+                },
+                {
+                  "title": "34.2 Try it Out",
+                  "anchor": "try-it-out-1"
+                },
+                {
+                  "title": "34.3 Time To Live (TTL)",
+                  "anchor": "time-to-live-ttl"
+                },
+                {
+                  "title": "34.4 Authoritative Servers",
+                  "anchor": "authoritative-servers"
+                },
+                {
+                  "title": "34.5 Getting the Root Name Servers",
+                  "anchor": "getting-the-root-name-servers"
+                },
+                {
+                  "title": "34.6 Digging at a Specific Name Server",
+                  "anchor": "digging-at-a-specific-name-server"
+                },
+                {
+                  "title": "34.7 Digging at a Root Name Server",
+                  "anchor": "digging-at-a-root-name-server"
+                },
+                {
+                  "title": "34.8 What to Do",
+                  "anchor": "what-to-do-1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "beej-section-8",
+          "title": "Security and chat projects",
+          "status": "Chapters 35–39",
+          "lessons": [
+            {
+              "id": "beej-ch35",
+              "number": 35,
+              "title": "35 Port Scanning",
+              "path": "beej/port-scanning.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 3,
+              "heads": [
+                "35.1 Mechanics of a Portscanner",
+                "35.2 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "35.1 Mechanics of a Portscanner",
+                  "anchor": "mechanics-of-a-portscanner"
+                },
+                {
+                  "title": "35.2 Reflect",
+                  "anchor": "reflect-18"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch36",
+              "number": 36,
+              "title": "36 Firewalls",
+              "path": "beej/firewalls.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 5,
+              "heads": [
+                "36.1 Firewall Operation",
+                "36.2 Firewalls and NAT",
+                "36.3 Local Firewalls",
+                "36.4 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "36.1 Firewall Operation",
+                  "anchor": "firewall-operation"
+                },
+                {
+                  "title": "36.2 Firewalls and NAT",
+                  "anchor": "firewalls-and-nat"
+                },
+                {
+                  "title": "36.3 Local Firewalls",
+                  "anchor": "local-firewalls"
+                },
+                {
+                  "title": "36.4 Reflect",
+                  "anchor": "reflect-19"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch37",
+              "number": 37,
+              "title": "37 Trusting User Data",
+              "path": "beej/trusting-user-data.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 5,
+              "heads": [
+                "37.1 Buffer Overflow/Overrun",
+                "37.2 Injection Attacks",
+                "37.3 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "37.1 Buffer Overflow/Overrun",
+                  "anchor": "buffer-overflowoverrun"
+                },
+                {
+                  "title": "37.2 Injection Attacks",
+                  "anchor": "injection-attacks"
+                },
+                {
+                  "title": "37.3 Reflect",
+                  "anchor": "reflect-20"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch38",
+              "number": 38,
+              "title": "38 Project: Port Scanning",
+              "path": "beej/project-port-scanning.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 1,
+              "heads": [],
+              "outline": []
+            },
+            {
+              "id": "beej-ch39",
+              "number": 39,
+              "title": "39 Project: Multiuser Chat Client and Server",
+              "path": "beej/project-multiuser-chat-client-and-server.html",
+              "format": "html",
+              "kind": "chapter",
+              "minutes": 11,
+              "heads": [
+                "39.1 Overall Architecture",
+                "39.2 Client I/O",
+                "39.3 The Client TUI",
+                "39.4 Packet Structure",
+                "39.5 JSON Payloads",
+                "39.6 Extensions",
+                "39.7 Some Recommendations"
+              ],
+              "outline": [
+                {
+                  "title": "39.1 Overall Architecture",
+                  "anchor": "overall-architecture"
+                },
+                {
+                  "title": "39.2 Client I/O",
+                  "anchor": "client-io"
+                },
+                {
+                  "title": "39.3 The Client TUI",
+                  "anchor": "the-client-tui"
+                },
+                {
+                  "title": "39.4 Packet Structure",
+                  "anchor": "packet-structure"
+                },
+                {
+                  "title": "39.5 JSON Payloads",
+                  "anchor": "json-payloads"
+                },
+                {
+                  "title": "39.6 Extensions",
+                  "anchor": "extensions-2"
+                },
+                {
+                  "title": "39.7 Some Recommendations",
+                  "anchor": "some-recommendations"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "beej-section-9",
+          "title": "Appendices",
+          "status": "Chapters 40–43",
+          "lessons": [
+            {
+              "id": "beej-ch40",
+              "number": 40,
+              "title": "40 Appendix: Bitwise Operations",
+              "path": "beej/appendix-bitwise.html",
+              "format": "html",
+              "kind": "appendix",
+              "minutes": 9,
+              "heads": [
+                "40.1 Coding Different Bases in Python",
+                "40.2 Printing and Converting",
+                "40.3 Bitwise-AND",
+                "40.4 Bitwise-OR",
+                "40.5 Bitwise-NOT",
+                "40.6 Bitwise shift",
+                "40.7 Setting a Given Number of 1 bits",
+                "40.8 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "40.1 Coding Different Bases in Python",
+                  "anchor": "coding-different-bases-in-python"
+                },
+                {
+                  "title": "40.2 Printing and Converting",
+                  "anchor": "printing-and-converting"
+                },
+                {
+                  "title": "40.3 Bitwise-AND",
+                  "anchor": "bitwise-and"
+                },
+                {
+                  "title": "40.4 Bitwise-OR",
+                  "anchor": "bitwise-or"
+                },
+                {
+                  "title": "40.5 Bitwise-NOT",
+                  "anchor": "bitwise-not"
+                },
+                {
+                  "title": "40.6 Bitwise shift",
+                  "anchor": "bitwise-shift"
+                },
+                {
+                  "title": "40.7 Setting a Given Number of 1 bits",
+                  "anchor": "setting-a-given-number-of-1-bits"
+                },
+                {
+                  "title": "40.8 Reflect",
+                  "anchor": "reflect-21"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch41",
+              "number": 41,
+              "title": "41 Appendix: Installing Packet Tracer",
+              "path": "beej/appendix-packettracer.html",
+              "format": "html",
+              "kind": "appendix",
+              "minutes": 2,
+              "heads": [
+                "41.1 Download Packet Tracer",
+                "41.2 Run Packet Tracer"
+              ],
+              "outline": [
+                {
+                  "title": "41.1 Download Packet Tracer",
+                  "anchor": "download-packet-tracer"
+                },
+                {
+                  "title": "41.2 Run Packet Tracer",
+                  "anchor": "run-packet-tracer"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch42",
+              "number": 42,
+              "title": "42 Appendix: Multithreading",
+              "path": "beej/appendix-threading.html",
+              "format": "html",
+              "kind": "appendix",
+              "minutes": 8,
+              "heads": [
+                "42.1 Concepts",
+                "42.2 Multithreading In Python",
+                "42.3 Daemon Threads",
+                "42.4 Reflect",
+                "42.5 Threading Project"
+              ],
+              "outline": [
+                {
+                  "title": "42.1 Concepts",
+                  "anchor": "concepts"
+                },
+                {
+                  "title": "42.2 Multithreading In Python",
+                  "anchor": "multithreading-in-python"
+                },
+                {
+                  "title": "42.3 Daemon Threads",
+                  "anchor": "daemon-threads"
+                },
+                {
+                  "title": "42.4 Reflect",
+                  "anchor": "reflect-22"
+                },
+                {
+                  "title": "42.5 Threading Project",
+                  "anchor": "threading-project"
+                }
+              ]
+            },
+            {
+              "id": "beej-ch43",
+              "number": 43,
+              "title": "43 Appendix: JSON",
+              "path": "beej/appendix-json.html",
+              "format": "html",
+              "kind": "appendix",
+              "minutes": 2,
+              "heads": [
+                "43.1 JSON versus Native",
+                "43.2 Converting Back and Forth",
+                "43.3 Pretty Printing",
+                "43.4 Double Quotes are Important",
+                "43.5 Reflect"
+              ],
+              "outline": [
+                {
+                  "title": "43.1 JSON versus Native",
+                  "anchor": "json-versus-native"
+                },
+                {
+                  "title": "43.2 Converting Back and Forth",
+                  "anchor": "converting-back-and-forth"
+                },
+                {
+                  "title": "43.3 Pretty Printing",
+                  "anchor": "pretty-printing"
+                },
+                {
+                  "title": "43.4 Double Quotes are Important",
+                  "anchor": "double-quotes-are-important"
+                },
+                {
+                  "title": "43.5 Reflect",
+                  "anchor": "reflect-23"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "examPolicy": "A section is a JavaScript volume, a C chapter group, or a selected TCP/IP chapter range. Endpoints are inclusive. TCP/IP Chapter 16 includes only 16.1 and 16.3. Quizzes cover assigned material; exams mix their chapter banks and extra questions where provided. 80% passes. Pending ranges and canceled placeholders have no assessment."
+}
